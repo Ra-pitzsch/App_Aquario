@@ -18,7 +18,7 @@ const CATEGORIAS = [
   { label: 'Filmes', type: 'filme' },
   { label: 'Séries', type: 'serie' },
   { label: 'Músicas', type: 'musica' },
-  { label: 'Docs', type: 'documentario' },
+  { label: 'Documentários', type: 'documentario' },
 ];
 
 const TYPE_LABELS = {
@@ -44,9 +44,6 @@ export default function ListScreen() {
 
       <View style={styles.header}>
         <View style={styles.headerTopRow}>
-          <Text style={styles.userGreeting}>
-            Olá, {user?.name || 'Usuário'} 👋
-          </Text>
           <TouchableOpacity style={styles.logoutButton} onPress={logout}>
             <Text style={styles.logoutButtonText}>Sair</Text>
           </TouchableOpacity>
@@ -145,6 +142,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   logoutButton: {
+    position: 'absolute',
+    right: 6,
+    top: 14,
     paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 8,
