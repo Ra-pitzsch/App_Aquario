@@ -8,11 +8,10 @@ import {
   StyleSheet,
   StatusBar,
 } from 'react-native';
+import { useAuth } from '../context/AuthContext';
 
 const CATEGORIAS = ['Todos', 'Filmes', 'Séries', 'Músicas', 'Docs'];
 
-// Sem imagem por enquanto — cada card mostra um bloco cinza no lugar
-// da capa. Quando quiser adicionar fotos, veja COMO-COLOCAR-AS-FOTOS.md
 const ITENS = [
   {
     id: '1',
@@ -66,8 +65,9 @@ function Estrelas({ nota }) {
   );
 }
 
-export default function ListScreen({ navigation }) {
+export default function ListScreen() {
   const [categoriaAtiva, setCategoriaAtiva] = useState('Todos');
+  const { user, logout } = useAuth();
 
   const itensFiltrados =
     categoriaAtiva === 'Todos'
@@ -80,11 +80,11 @@ export default function ListScreen({ navigation }) {
 
       <View style={styles.header}>
         <View style={styles.headerTopRow}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation && navigation.navigate('Login')}
-          >
-            <Text style={styles.backButtonText}>‹ Voltar</Text>
+          <Text style={styles.userGreeting}>
+            Olá, {user?.name || 'Usuário'} 👋
+          </Text>
+          <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+            <Text style={styles.logoutButtonText}>Sair</Text>
           </TouchableOpacity>
         </View>
         <Text style={styles.headerTitle}>Aquário</Text>
@@ -145,24 +145,35 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 22,
-    paddingTop: 18,
+    paddingTop: 48,
     paddingBottom: 12,
   },
   headerTopRow: {
     flexDirection: 'row',
-    marginBottom: 6,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
-  backButton: {
-    paddingVertical: 4,
-    paddingRight: 10,
-  },
-  backButtonText: {
+  userGreeting: {
     color: '#A9A6B2',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
+  },
+  logoutButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: '#1E1B24',
+    borderWidth: 1,
+    borderColor: '#2A2733',
+  },
+  logoutButtonText: {
+    color: '#E63950',
+    fontSize: 13,
+    fontWeight: '700',
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: '800',
     color: '#FFFFFF',
   },

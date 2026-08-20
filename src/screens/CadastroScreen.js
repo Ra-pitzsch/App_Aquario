@@ -14,30 +14,49 @@ import CustomButton from '../components/CustomButton';
 import AuthLink from '../components/AuthLink';
 import { useAuth } from '../context/AuthContext';
 
-export default function LoginScreen({ navigation }) {
+export default function CadastroScreen({ navigation }) {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { login } = useAuth();
+  const { register, login } = useAuth();
 
-  const handleLogin = async () => {
-    if (!email.trim() || !password) {
+  const handleRegister = async () => {
+    // 1. Validação de campos vazios
+    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
       Alert.alert('Atenção', 'Por favor, preencha todos os campos.');
+      return;
+    }
+
+    // 2. Validação de confirmação de senha
+    if (password !== confirmPassword) {
+      Alert.alert('Atenção', 'As senhas não coincidem.');
       return;
     }
 
     try {
       setIsSubmitting(true);
-      const result = await login(email, password);
+      // 3. Registro do usuário no Context
+      const regResult = await register(name, email, password);
 
-      if (!result.success) {
-        Alert.alert('Erro ao entrar', result.message);
+      if (!regResult.success) {
+        Alert.alert('Erro no cadastro', regResult.message);
+        return;
       }
-      // Se tiver sucesso, o estado global do AuthContext (user) é atualizado
-      // e o RootNavigator alternará automaticamente para a tela logada.
+
+      // 4. Loga automaticamente em seguida
+      const loginResult = await login(email, password);
+      if (!loginResult.success) {
+        Alert.alert(
+          'Sucesso',
+          'Conta criada! Por favor, faça login com suas credenciais.',
+          [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+        );
+      }
     } catch (error) {
-      Alert.alert('Erro', 'Ocorreu um erro inesperado ao fazer login.');
+      Alert.alert('Erro', 'Ocorreu um erro inesperado ao realizar o cadastro.');
     } finally {
       setIsSubmitting(false);
     }
@@ -59,12 +78,19 @@ export default function LoginScreen({ navigation }) {
           </View>
           <Text style={styles.appName}>Aquário</Text>
           <Text style={styles.subtitle}>
-            Avalie filmes, séries, músicas e documentários
+            Crie sua conta para começar a registrar suas avaliações
           </Text>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Entrar</Text>
+          <Text style={styles.cardTitle}>Criar Conta</Text>
+
+          <Text style={styles.label}>Nome</Text>
+          <CustomInput
+            placeholder="Seu nome completo"
+            value={name}
+            onChangeText={setName}
+          />
 
           <Text style={styles.label}>E-mail</Text>
           <CustomInput
@@ -81,15 +107,23 @@ export default function LoginScreen({ navigation }) {
             onChangeText={setPassword}
           />
 
+          <Text style={styles.label}>Confirmar Senha</Text>
+          <CustomInput
+            placeholder="••••••••"
+            secureTextEntry
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
+
           <CustomButton
-            title="Entrar"
-            onPress={handleLogin}
+            title="Cadastrar"
+            onPress={handleRegister}
             loading={isSubmitting}
           />
 
           <AuthLink
-            text="Não tem uma conta? Cadastre-se"
-            onPress={() => navigation.navigate('Cadastro')}
+            text="Já tem uma conta? Entrar"
+            onPress={() => navigation.navigate('Login')}
           />
         </View>
       </ScrollView>
@@ -109,16 +143,16 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 28,
+    marginBottom: 24,
   },
   logoCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: '#E63950',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 14,
+    marginBottom: 12,
     shadowColor: '#E63950',
     shadowOpacity: 0.3,
     shadowRadius: 10,
@@ -126,10 +160,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   logoEmoji: {
-    fontSize: 34,
+    fontSize: 30,
   },
   appName: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: '800',
     color: '#FFFFFF',
     letterSpacing: 0.5,
@@ -137,9 +171,9 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 13,
     color: '#A9A6B2',
-    marginTop: 6,
+    marginTop: 4,
     textAlign: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
   },
   card: {
     backgroundColor: '#1E1B24',
