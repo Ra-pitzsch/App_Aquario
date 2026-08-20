@@ -7,72 +7,36 @@ import {
   TouchableOpacity,
   StyleSheet,
   StatusBar,
+  Image,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import catalog from '../data/catalog.json';
+import { catalogImages } from '../data/images';
 
-const CATEGORIAS = ['Todos', 'Filmes', 'Séries', 'Músicas', 'Docs'];
-
-const ITENS = [
-  {
-    id: '1',
-    titulo: 'Duna: Parte Dois',
-    categoria: 'Filmes',
-    nota: 4.8,
-  },
-  {
-    id: '2',
-    titulo: 'Breaking Bad',
-    categoria: 'Séries',
-    nota: 4.9,
-  },
-  {
-    id: '3',
-    titulo: 'Blinding Lights',
-    categoria: 'Músicas',
-    nota: 4.5,
-  },
-  {
-    id: '4',
-    titulo: 'Free Solo',
-    categoria: 'Docs',
-    nota: 4.7,
-  },
-  {
-    id: '5',
-    titulo: 'Oppenheimer',
-    categoria: 'Filmes',
-    nota: 4.6,
-  },
-  {
-    id: '6',
-    titulo: 'Stranger Things',
-    categoria: 'Séries',
-    nota: 4.4,
-  },
+const CATEGORIAS = [
+  { label: 'Todos', type: null },
+  { label: 'Filmes', type: 'filme' },
+  { label: 'Séries', type: 'serie' },
+  { label: 'Músicas', type: 'musica' },
+  { label: 'Docs', type: 'documentario' },
 ];
 
-function Estrelas({ nota }) {
-  const cheias = Math.round(nota);
-  return (
-    <View style={styles.starsRow}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Text key={i} style={styles.star}>
-          {i <= cheias ? '★' : '☆'}
-        </Text>
-      ))}
-      <Text style={styles.notaText}>{nota.toFixed(1)}</Text>
-    </View>
-  );
-}
+const TYPE_LABELS = {
+  filme: 'Filme',
+  serie: 'Série',
+  musica: 'Música',
+  documentario: 'Documentário',
+};
 
 export default function ListScreen() {
   const [categoriaAtiva, setCategoriaAtiva] = useState('Todos');
   const { user, logout } = useAuth();
 
-  const itensFiltrados =
-    categoriaAtiva === 'Todos'
-      ? ITENS
-      : ITENS.filter((item) => item.categoria === categoriaAtiva);
+  const filtroTipo = CATEGORIAS.find((c) => c.label === categoriaAtiva)?.type;
+
+  const itensFiltrados = filtroTipo
+    ? catalog.filter((item) => item.type === filtroTipo)
+    : catalog;
 
   return (
     <View style={styles.container}>
@@ -99,20 +63,20 @@ export default function ListScreen() {
       >
         {CATEGORIAS.map((item) => (
           <TouchableOpacity
-            key={item}
+            key={item.label}
             style={[
               styles.chip,
-              categoriaAtiva === item && styles.chipAtivo,
+              categoriaAtiva === item.label && styles.chipAtivo,
             ]}
-            onPress={() => setCategoriaAtiva(item)}
+            onPress={() => setCategoriaAtiva(item.label)}
           >
             <Text
               style={[
                 styles.chipText,
-                categoriaAtiva === item && styles.chipTextAtivo,
+                categoriaAtiva === item.label && styles.chipTextAtivo,
               ]}
             >
-              {item}
+              {item.label}
             </Text>
           </TouchableOpacity>
         ))}
@@ -122,17 +86,38 @@ export default function ListScreen() {
         data={itensFiltrados}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.lista}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card}>
-            <View style={styles.capa} />
-            <View style={styles.cardInfo}>
-              <Text style={styles.cardCategoria}>{item.categoria}</Text>
-              <Text style={styles.cardTitulo}>{item.titulo}</Text>
-              <Estrelas nota={item.nota} />
-            </View>
-            <Text style={styles.chevron}>›</Text>
-          </TouchableOpacity>
-        )}
+        renderItem={({ item }) => {
+          const imageSource = catalogImages[item.id];
+
+          return (
+            <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+              {imageSource ? (
+                <Image
+                  source={imageSource}
+                  style={styles.capa}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.capa} />
+              )}
+              <View style={styles.cardInfo}>
+                <View style={styles.cardMetaRow}>
+                  <Text style={styles.cardCategoria}>
+                    {TYPE_LABELS[item.type] || item.type}
+                  </Text>
+                  <Text style={styles.cardYear}>• {item.year}</Text>
+                </View>
+                <Text style={styles.cardTitulo} numberOfLines={1}>
+                  {item.title}
+                </Text>
+                <Text style={styles.cardDescricao} numberOfLines={2}>
+                  {item.description}
+                </Text>
+              </View>
+              <Text style={styles.chevron}>›</Text>
+            </TouchableOpacity>
+          );
+        }}
       />
     </View>
   );
@@ -222,20 +207,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1E1B24',
     borderRadius: 16,
-    padding: 10,
+    padding: 12,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#2A2733',
   },
   capa: {
-    width: 56,
-    height: 76,
+    width: 60,
+    height: 80,
     borderRadius: 10,
     backgroundColor: '#2A2733',
   },
   cardInfo: {
     flex: 1,
     marginLeft: 14,
+    justifyContent: 'center',
+  },
+  cardMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
   },
   cardCategoria: {
     fontSize: 11,
@@ -243,32 +234,27 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.4,
-    marginBottom: 3,
+  },
+  cardYear: {
+    fontSize: 11,
+    color: '#8A8794',
+    fontWeight: '600',
+    marginLeft: 4,
   },
   cardTitulo: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#FFFFFF',
     fontWeight: '700',
-    marginBottom: 6,
+    marginBottom: 4,
   },
-  starsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  star: {
-    color: '#F5B400',
-    fontSize: 13,
-    marginRight: 1,
-  },
-  notaText: {
-    color: '#A9A6B2',
+  cardDescricao: {
     fontSize: 12,
-    marginLeft: 6,
-    fontWeight: '600',
+    color: '#A9A6B2',
+    lineHeight: 16,
   },
   chevron: {
     fontSize: 26,
     color: '#4C4956',
-    marginLeft: 4,
+    marginLeft: 8,
   },
 });

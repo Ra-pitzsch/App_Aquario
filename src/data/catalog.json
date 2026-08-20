@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "title": "Duna: Parte Dois",
+    "type": "filme",
+    "year": 2024,
+    "description": "Paul Atreides se une a Chani e aos Fremen em busca de vingança contra os conspiradores que destruíram sua família."
+  },
+  {
+    "id": "2",
+    "title": "Breaking Bad",
+    "type": "serie",
+    "year": 2008,
+    "description": "Um professor de química do ensino médio diagnosticado com câncer inoperável se torna um grande produtor de metanfetamina."
+  },
+  {
+    "id": "3",
+    "title": "Blinding Lights",
+    "type": "musica",
+    "year": 2020,
+    "description": "Sucesso mundial de synthwave e electropop lançado pelo cantor e compositor canadense The Weeknd."
+  },
+  {
+    "id": "4",
+    "title": "Free Solo",
+    "type": "documentario",
+    "year": 2018,
+    "description": "O escalador Alex Honnold realiza uma histórica escalada solo sem cordas no imponente paredão El Capitan."
+  },
+  {
+    "id": "5",
+    "title": "Oppenheimer",
+    "type": "filme",
+    "year": 2023,
+    "description": "A trajetória de J. Robert Oppenheimer liderando o Projeto Manhattan na criação da primeira bomba atômica."
+  },
+  {
+    "id": "6",
+    "title": "Stranger Things",
+    "type": "serie",
+    "year": 2016,
+    "description": "Amigos enfrentam mistérios sobrenaturais e conspirações governamentais nos anos 80 após o sumiço de um garoto."
+  }
+]
