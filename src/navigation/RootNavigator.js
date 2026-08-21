@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import LoginScreen from '../screens/LoginScreen';
 import CadastroScreen from '../screens/CadastroScreen';
 import ListScreen from '../screens/ListScreen';
+import DetalhesScreen from '../screens/DetalhesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,7 +30,10 @@ export default function RootNavigator() {
     >
       {user ? (
         // Rotas Autenticadas
-        <Stack.Screen name="List" component={ListScreen} />
+        <>
+          <Stack.Screen name="List" component={ListScreen} />
+          <Stack.Screen name="Detalhes" component={DetalhesScreen} />
+        </>
       ) : (
         // Rotas de Autenticação
         <>
