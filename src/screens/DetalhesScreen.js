@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getItemById } from '../services/catalogService';
-import { getAverageRating } from '../utils/ratings';
+import { getAverageRating, getRatingsWithUserDetails } from '../utils/ratings';
 import CustomButton from '../components/CustomButton';
 
 const TYPE_LABELS = {
@@ -19,6 +19,20 @@ const TYPE_LABELS = {
   musica: 'Música',
   documentario: 'Documentário',
 };
+
+function formatReviewDate(dateString) {
+  if (!dateString) return '';
+  try {
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return '';
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  } catch {
+    return '';
+  }
+}
 
 function Estrelas({ nota = 0, total = 0 }) {
   const cheias = Math.round(nota);
@@ -46,25 +60,34 @@ function Estrelas({ nota = 0, total = 0 }) {
 export default function DetalhesScreen({ route, navigation }) {
   const { id } = route?.params || {};
   const [ratingStats, setRatingStats] = useState({ average: 0, total: 0 });
+  const [ratingsList, setRatingsList] = useState([]);
 
   // Busca isolada do item via service
   const item = useMemo(() => getItemById(id), [id]);
 
-  // Recarrega as avaliações sempre que a tela entra em foco (ex: ao voltar da tela Avaliar)
+  // Recarrega as avaliações e a lista sempre que a tela entra em foco
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
 
-      async function fetchRating() {
+      async function fetchRatingsData() {
         if (id) {
-          const stats = await getAverageRating({ itemId: id });
-          if (isActive) {
-            setRatingStats(stats);
+          try {
+            const [stats, reviews] = await Promise.all([
+              getAverageRating({ itemId: id }),
+              getRatingsWithUserDetails({ itemId: id }),
+            ]);
+            if (isActive) {
+              setRatingStats(stats);
+              setRatingsList(reviews);
+            }
+          } catch (error) {
+            console.error('Erro ao buscar avaliações na tela de detalhes:', error);
           }
         }
       }
 
-      fetchRating();
+      fetchRatingsData();
 
       return () => {
         isActive = false;
@@ -161,6 +184,96 @@ export default function DetalhesScreen({ route, navigation }) {
               onPress={handleAvaliar}
             />
           </View>
+        </View>
+
+        {/* Seção de Avaliações e Comentários */}
+        <View style={styles.reviewsSection}>
+          <View style={styles.reviewsHeaderRow}>
+            <Text style={styles.reviewsSectionTitle}>Avaliações</Text>
+            {ratingsList.length > 0 && (
+              <View style={styles.reviewsCountBadge}>
+                <Text style={styles.reviewsCountBadgeText}>
+                  {ratingsList.length}
+                </Text>
+              </View>
+            )}
+          </View>
+
+          {ratingsList.length === 0 ? (
+            <View style={styles.emptyReviewsBox}>
+              <Text style={styles.emptyReviewsEmoji}>💬</Text>
+              <Text style={styles.emptyReviewsTitle}>
+                Nenhuma avaliação ainda
+              </Text>
+              <Text style={styles.emptyReviewsSubtitle}>
+                Seja o primeiro a avaliar este item!
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.reviewsList}>
+              {ratingsList.map((review, index) => {
+                const hasComment =
+                  typeof review.comment === 'string' &&
+                  review.comment.trim().length > 0;
+
+                return (
+                  <View
+                    key={review.userId || index}
+                    style={[
+                      styles.reviewCard,
+                      index === ratingsList.length - 1 && styles.reviewCardLast,
+                    ]}
+                  >
+                    <View style={styles.reviewHeader}>
+                      <View style={styles.reviewUserGroup}>
+                        <View style={styles.avatar}>
+                          <Text style={styles.avatarText}>
+                            {review.userName
+                              ? review.userName.charAt(0).toUpperCase()
+                              : '👤'}
+                          </Text>
+                        </View>
+                        <View>
+                          <Text style={styles.reviewUserName}>
+                            {review.userName || 'Usuário'}
+                          </Text>
+                          {review.date ? (
+                            <Text style={styles.reviewDate}>
+                              {formatReviewDate(review.date)}
+                            </Text>
+                          ) : null}
+                        </View>
+                      </View>
+
+                      <View style={styles.reviewStarsRow}>
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Text
+                            key={s}
+                            style={[
+                              styles.reviewStarIcon,
+                              s <= review.rating
+                                ? styles.reviewStarFilled
+                                : styles.reviewStarEmpty,
+                            ]}
+                          >
+                            ★
+                          </Text>
+                        ))}
+                      </View>
+                    </View>
+
+                    {hasComment && (
+                      <View style={styles.commentBox}>
+                        <Text style={styles.commentText}>
+                          {review.comment.trim()}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -354,4 +467,133 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 14,
   },
+  reviewsSection: {
+    marginTop: 24,
+  },
+  reviewsHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 14,
+  },
+  reviewsSectionTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
+  reviewsCountBadge: {
+    backgroundColor: 'rgba(230, 57, 80, 0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(230, 57, 80, 0.3)',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    marginLeft: 8,
+  },
+  reviewsCountBadgeText: {
+    color: '#E63950',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  emptyReviewsBox: {
+    backgroundColor: '#1E1B24',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#2A2733',
+    padding: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyReviewsEmoji: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  emptyReviewsTitle: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  emptyReviewsSubtitle: {
+    color: '#8A8794',
+    fontSize: 13,
+    textAlign: 'center',
+  },
+  reviewsList: {
+    gap: 0,
+  },
+  reviewCard: {
+    backgroundColor: '#1E1B24',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#2A2733',
+    padding: 16,
+    marginBottom: 12,
+  },
+  reviewCardLast: {
+    marginBottom: 0,
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  reviewUserGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(230, 57, 80, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(230, 57, 80, 0.35)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  avatarText: {
+    color: '#E63950',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  reviewUserName: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  reviewDate: {
+    color: '#8A8794',
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  reviewStarsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reviewStarIcon: {
+    fontSize: 14,
+    marginLeft: 1,
+  },
+  reviewStarFilled: {
+    color: '#F5B400',
+  },
+  reviewStarEmpty: {
+    color: '#34313D',
+  },
+  commentBox: {
+    marginTop: 12,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#2A2733',
+  },
+  commentText: {
+    color: '#C7C4D0',
+    fontSize: 13,
+    lineHeight: 20,
+  },
 });
+

@@ -119,9 +119,9 @@ export async function getAverageRating({ itemId }) {
  * 
  * @param {Object} params
  * @param {string|number} params.itemId - ID do item
- * @returns {Promise<Array<Object>>} Lista de avaliações
+ * @returns {Promise<Array<Object>>} Lista de avaliações: { userId, itemId, rating, comment, date }
  */
-export async function getAllRatingsForItem({ itemId }) {
+export async function getRatingsByItem({ itemId }) {
   if (!itemId) {
     return [];
   }
@@ -132,3 +132,36 @@ export async function getAllRatingsForItem({ itemId }) {
 
   return ratings.filter((r) => String(r.itemId) === strItemId);
 }
+
+/**
+ * Retorna todas as avaliações de um item já com os dados do usuário (ex: userName) mesclados.
+ * 
+ * @param {Object} params
+ * @param {string|number} params.itemId - ID do item
+ * @returns {Promise<Array<Object>>} Lista de avaliações enriquecidas com userName
+ */
+export async function getRatingsWithUserDetails({ itemId }) {
+  if (!itemId) {
+    return [];
+  }
+
+  const itemRatings = await getRatingsByItem({ itemId });
+  if (itemRatings.length === 0) {
+    return [];
+  }
+
+  const usersJson = await AsyncStorage.getItem('@users');
+  const users = usersJson ? JSON.parse(usersJson) : [];
+  const usersMap = new Map(users.map((u) => [String(u.id), u.name || 'Usuário']));
+
+  return itemRatings.map((r) => ({
+    ...r,
+    userName: usersMap.get(String(r.userId)) || 'Usuário Anônimo',
+  }));
+}
+
+/**
+ * Alias para getAllRatingsForItem (mantendo retrocompatibilidade).
+ */
+export const getAllRatingsForItem = getRatingsByItem;
+
