@@ -83,6 +83,26 @@ export async function getRatingByUser({ userId, itemId }) {
 }
 
 /**
+ * Retorna todas as avaliações feitas por um determinado usuário.
+ * 
+ * @param {Object} params
+ * @param {string|number} params.userId - ID do usuário
+ * @returns {Promise<Array<Object>>} Lista de avaliações do usuário
+ */
+export async function getRatingsByUser({ userId }) {
+  if (!userId) {
+    return [];
+  }
+
+  const strUserId = String(userId);
+  const ratingsJson = await AsyncStorage.getItem(RATINGS_KEY);
+  const ratings = ratingsJson ? JSON.parse(ratingsJson) : [];
+
+  return ratings.filter((r) => String(r.userId) === strUserId);
+}
+
+
+/**
  * Calcula a média e total de avaliações de um item.
  * 
  * @param {Object} params

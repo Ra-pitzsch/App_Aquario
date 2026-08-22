@@ -44,11 +44,27 @@ export default function ListScreen({ navigation }) {
 
       <View style={styles.header}>
         <View style={styles.headerTopRow}>
-          <Text style={styles.userGreeting}>
-            Olá, {user?.name || 'Usuário'} 👋
-          </Text>
-          <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-            <Text style={styles.logoutButtonText}>Sair</Text>
+          <TouchableOpacity
+            style={styles.greetingRow}
+            onPress={() => navigation.navigate('Perfil')}
+            activeOpacity={0.7}
+          >
+            <View style={styles.miniAvatar}>
+              <Text style={styles.miniAvatarText}>
+                {user?.name ? user.name.charAt(0).toUpperCase() : '👤'}
+              </Text>
+            </View>
+            <Text style={styles.userGreeting}>
+              Olá, {user?.name || 'Usuário'} 👋
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() => navigation.navigate('Perfil')}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.profileButtonText}>👤 Meu Perfil</Text>
           </TouchableOpacity>
         </View>
         <Text style={styles.headerTitle}>Aquário</Text>
@@ -141,22 +157,43 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
+  },
+  greetingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  miniAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(230, 57, 80, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(230, 57, 80, 0.4)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  miniAvatarText: {
+    color: '#E63950',
+    fontSize: 12,
+    fontWeight: '700',
   },
   userGreeting: {
-    color: '#A9A6B2',
+    color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
-  logoutButton: {
-    paddingVertical: 4,
+  profileButton: {
+    paddingVertical: 6,
     paddingHorizontal: 12,
-    borderRadius: 8,
+    borderRadius: 10,
     backgroundColor: '#1E1B24',
     borderWidth: 1,
     borderColor: '#2A2733',
   },
-  logoutButtonText: {
+  profileButtonText: {
     color: '#E63950',
     fontSize: 13,
     fontWeight: '700',

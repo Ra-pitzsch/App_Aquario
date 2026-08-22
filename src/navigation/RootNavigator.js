@@ -8,6 +8,7 @@ import CadastroScreen from '../screens/CadastroScreen';
 import ListScreen from '../screens/ListScreen';
 import DetalhesScreen from '../screens/DetalhesScreen';
 import AvaliarScreen from '../screens/AvaliarScreen';
+import PerfilScreen from '../screens/PerfilScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +36,7 @@ export default function RootNavigator() {
           <Stack.Screen name="List" component={ListScreen} />
           <Stack.Screen name="Detalhes" component={DetalhesScreen} />
           <Stack.Screen name="Avaliar" component={AvaliarScreen} />
+          <Stack.Screen name="Perfil" component={PerfilScreen} />
         </>
       ) : (
         // Rotas de Autenticação
