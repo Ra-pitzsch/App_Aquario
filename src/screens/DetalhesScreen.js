@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   StatusBar,
-  Alert,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { getItemById } from '../services/catalogService';
+import { getAverageRating } from '../utils/ratings';
 import CustomButton from '../components/CustomButton';
 
 const TYPE_LABELS = {
@@ -19,40 +20,60 @@ const TYPE_LABELS = {
   documentario: 'Documentário',
 };
 
-function Estrelas({ nota = 4.8 }) {
+function Estrelas({ nota = 0, total = 0 }) {
   const cheias = Math.round(nota);
   return (
     <View style={styles.starsContainer}>
       <View style={styles.starsRow}>
         {[1, 2, 3, 4, 5].map((i) => (
           <Text key={i} style={styles.star}>
-            {i <= cheias ? '★' : '☆'}
+            {i <= cheias && nota > 0 ? '★' : '☆'}
           </Text>
         ))}
       </View>
-      <Text style={styles.notaValue}>{nota.toFixed(1)}</Text>
-      <Text style={styles.notaLabel}>/ 5.0 (média)</Text>
+      <Text style={styles.notaValue}>
+        {nota > 0 ? nota.toFixed(1) : 'Sem avaliações'}
+      </Text>
+      <Text style={styles.notaLabel}>
+        {total > 0
+          ? `/ 5.0 (${total} ${total === 1 ? 'avaliação' : 'avaliações'})`
+          : ''}
+      </Text>
     </View>
   );
 }
 
 export default function DetalhesScreen({ route, navigation }) {
   const { id } = route?.params || {};
+  const [ratingStats, setRatingStats] = useState({ average: 0, total: 0 });
 
   // Busca isolada do item via service
   const item = useMemo(() => getItemById(id), [id]);
 
+  // Recarrega as avaliações sempre que a tela entra em foco (ex: ao voltar da tela Avaliar)
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      async function fetchRating() {
+        if (id) {
+          const stats = await getAverageRating({ itemId: id });
+          if (isActive) {
+            setRatingStats(stats);
+          }
+        }
+      }
+
+      fetchRating();
+
+      return () => {
+        isActive = false;
+      };
+    }, [id])
+  );
+
   const handleAvaliar = () => {
-    try {
-      // Tenta navegar para a tela Avaliar; se a rota ainda não existir, exibe alerta amigável
-      navigation.navigate('Avaliar', { id: item?.id, title: item?.title });
-    } catch (error) {
-      Alert.alert(
-        'Avaliar',
-        'A tela de avaliação será disponibilizada na próxima etapa!',
-        [{ text: 'OK' }]
-      );
-    }
+    navigation.navigate('Avaliar', { id: item?.id, title: item?.title });
   };
 
   if (!item) {
@@ -123,8 +144,8 @@ export default function DetalhesScreen({ route, navigation }) {
 
           <Text style={styles.title}>{item.title}</Text>
 
-          {/* Nota Média */}
-          <Estrelas nota={4.8} />
+          {/* Nota Média Dinâmica */}
+          <Estrelas nota={ratingStats.average} total={ratingStats.total} />
 
           {/* Divisor */}
           <View style={styles.divider} />

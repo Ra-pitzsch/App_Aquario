@@ -6,16 +6,24 @@ export default function CustomInput({
   value,
   onChangeText,
   secureTextEntry = false,
+  multiline = false,
+  numberOfLines = 1,
+  style,
+  ...rest
 }) {
   return (
     <TextInput
-      style={styles.input}
+      style={[styles.input, multiline && styles.multilineInput, style]}
       placeholder={placeholder}
       placeholderTextColor="#8A8794"
       value={value}
       onChangeText={onChangeText}
       secureTextEntry={secureTextEntry}
       autoCapitalize="none"
+      multiline={multiline}
+      numberOfLines={numberOfLines}
+      textAlignVertical={multiline ? 'top' : 'center'}
+      {...rest}
     />
   );
 }
@@ -33,4 +41,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     width: '100%',
   },
+  multilineInput: {
+    minHeight: 110,
+    paddingTop: 14,
+  },
 });
+
