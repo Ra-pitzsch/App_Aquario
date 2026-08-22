@@ -92,3 +92,24 @@ export async function getCurrentUser() {
 export async function logoutUser() {
   await AsyncStorage.removeItem(CURRENT_USER_KEY);
 }
+
+/**
+ * Retorna todos os usuários cadastrados no AsyncStorage.
+ * @returns {Promise<Array<Object>>} lista de usuários
+ */
+export async function getAllUsers() {
+  const usersJson = await AsyncStorage.getItem(USERS_KEY);
+  return usersJson ? JSON.parse(usersJson) : [];
+}
+
+/**
+ * Busca um usuário pelo ID.
+ * @param {string|number} userId
+ * @returns {Promise<Object|null>}
+ */
+export async function getUserById(userId) {
+  if (!userId) return null;
+  const users = await getAllUsers();
+  return users.find((u) => String(u.id) === String(userId)) || null;
+}
+
