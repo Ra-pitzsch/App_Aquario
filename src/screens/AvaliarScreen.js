@@ -17,6 +17,7 @@ import { getItemById } from '../services/catalogService';
 import { saveRating, getRatingByUser } from '../utils/ratings';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
+import colors from '../styles/theme';
 
 const RATING_LABELS = {
   1: '1 de 5 • Ruim 🙁',
@@ -45,7 +46,6 @@ export default function AvaliarScreen({ route, navigation }) {
   const [saving, setSaving] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Carrega avaliação prévia do usuário, se houver
   useEffect(() => {
     async function loadExistingRating() {
       if (!user?.id || !id) {
@@ -116,7 +116,7 @@ export default function AvaliarScreen({ route, navigation }) {
   if (!item) {
     return (
       <View style={styles.errorContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#141218" />
+        <StatusBar barStyle="light-content" backgroundColor={colors.background} />
         <Text style={styles.errorEmoji}>🔍</Text>
         <Text style={styles.errorTitle}>Item não encontrado</Text>
         <Text style={styles.errorSubtitle}>
@@ -137,7 +137,7 @@ export default function AvaliarScreen({ route, navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <StatusBar barStyle="light-content" backgroundColor="#141218" />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
 
       {/* Header */}
       <View style={styles.header}>
@@ -186,7 +186,7 @@ export default function AvaliarScreen({ route, navigation }) {
 
         {loadingRating ? (
           <View style={styles.loadingBox}>
-            <ActivityIndicator size="small" color="#E63950" />
+            <ActivityIndicator size="small" color={colors.primary} />
             <Text style={styles.loadingText}>Carregando avaliação...</Text>
           </View>
         ) : (
@@ -267,7 +267,7 @@ export default function AvaliarScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -276,21 +276,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 48,
     paddingBottom: 14,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E1B24',
+    borderBottomColor: colors.border,
   },
   backButton: {
     paddingVertical: 6,
     paddingHorizontal: 8,
   },
   backButtonText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 16,
     fontWeight: '700',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 17,
     fontWeight: '700',
   },
@@ -304,24 +304,24 @@ const styles = StyleSheet.create({
   itemCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     padding: 14,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
   },
   itemImage: {
     width: 60,
     height: 80,
     borderRadius: 10,
-    backgroundColor: '#2A2733',
+    backgroundColor: colors.backgroundTertiary,
   },
   itemPlaceholder: {
     width: 60,
     height: 80,
     borderRadius: 10,
-    backgroundColor: '#2A2733',
+    backgroundColor: colors.backgroundTertiary,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -334,16 +334,16 @@ const styles = StyleSheet.create({
   },
   typeBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(230, 57, 80, 0.15)',
+    backgroundColor: 'rgba(0, 184, 212, 0.15)',
     paddingVertical: 3,
     paddingHorizontal: 8,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: 'rgba(230, 57, 80, 0.3)',
+    borderColor: 'rgba(0, 184, 212, 0.3)',
     marginBottom: 4,
   },
   typeBadgeText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 10,
     fontWeight: '700',
     textTransform: 'uppercase',
@@ -352,31 +352,31 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: colors.text,
     marginBottom: 2,
   },
   itemYear: {
     fontSize: 12,
-    color: '#8A8794',
+    color: colors.textMuted,
     fontWeight: '500',
   },
   formCard: {
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 20,
     padding: 20,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
   },
   updatingNotice: {
-    backgroundColor: 'rgba(245, 180, 0, 0.12)',
+    backgroundColor: 'rgba(255, 193, 7, 0.12)',
     borderWidth: 1,
-    borderColor: 'rgba(245, 180, 0, 0.3)',
+    borderColor: 'rgba(255, 193, 7, 0.3)',
     borderRadius: 10,
     padding: 10,
     marginBottom: 18,
   },
   updatingNoticeText: {
-    color: '#F5B400',
+    color: colors.star,
     fontSize: 12,
     fontWeight: '600',
     lineHeight: 18,
@@ -384,16 +384,16 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: colors.text,
     marginBottom: 12,
   },
   starsContainer: {
     alignItems: 'center',
     paddingVertical: 14,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
     marginBottom: 20,
   },
   starsRow: {
@@ -409,15 +409,15 @@ const styles = StyleSheet.create({
     fontSize: 38,
   },
   starFilled: {
-    color: '#F5B400',
+    color: colors.star,
   },
   starEmpty: {
-    color: '#34313D',
+    color: colors.starInactive,
   },
   ratingFeedback: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#A9A6B2',
+    color: colors.textSecondary,
   },
   commentSection: {
     marginTop: 4,
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
   },
   optionalBadge: {
     fontSize: 11,
-    color: '#8A8794',
+    color: colors.textMuted,
     fontWeight: '600',
     textTransform: 'uppercase',
   },
@@ -443,13 +443,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingText: {
-    color: '#8A8794',
+    color: colors.textMuted,
     marginTop: 10,
     fontSize: 14,
   },
   errorContainer: {
     flex: 1,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
@@ -459,13 +459,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   errorTitle: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 8,
   },
   errorSubtitle: {
-    color: '#8A8794',
+    color: colors.textSecondary,
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 24,
@@ -473,13 +473,13 @@ const styles = StyleSheet.create({
   backLink: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
   },
   backLinkText: {
-    color: '#E63950',
+    color: colors.primary,
     fontWeight: '700',
     fontSize: 14,
   },

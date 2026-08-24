@@ -2,6 +2,7 @@ import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../context/AuthContext';
+import colors from '../styles/theme';
 
 import LoginScreen from '../screens/LoginScreen';
 import CadastroScreen from '../screens/CadastroScreen';
@@ -17,7 +18,7 @@ export default function RootNavigator() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#E63950" />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -26,7 +27,7 @@ export default function RootNavigator() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: '#141218' },
+        contentStyle: { backgroundColor: colors.background },
       }}
     >
       {user ? (
@@ -50,7 +51,7 @@ export default function RootNavigator() {
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
   },

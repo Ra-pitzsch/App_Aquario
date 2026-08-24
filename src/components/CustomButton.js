@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import colors from '../styles/theme';
 
 export default function CustomButton({ title, onPress, loading = false }) {
   return (
@@ -10,7 +11,7 @@ export default function CustomButton({ title, onPress, loading = false }) {
       activeOpacity={0.8}
     >
       {loading ? (
-        <Text style={styles.buttonText}>Carregando...</Text>
+        <ActivityIndicator color={colors.text} />
       ) : (
         <Text style={styles.buttonText}>{title}</Text>
       )}
@@ -20,7 +21,7 @@ export default function CustomButton({ title, onPress, loading = false }) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#E63950',
+    backgroundColor: colors.primary,
     borderRadius: 12,
     paddingVertical: 15,
     alignItems: 'center',
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
     width: '100%',
-    shadowColor: '#E63950',
+    shadowColor: colors.primary,
     shadowOpacity: 0.35,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontWeight: '700',
     fontSize: 16,
     letterSpacing: 0.3,

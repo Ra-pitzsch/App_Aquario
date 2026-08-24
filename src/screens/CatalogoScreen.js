@@ -12,6 +12,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import catalog from '../data/catalog.json';
 import { catalogImages } from '../data/images';
+import colors from '../styles/theme';
 
 const CATEGORIAS = [
   { label: 'Todos', type: null },
@@ -40,7 +41,7 @@ export default function CatalogoScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#141218" />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
 
       <View style={styles.header}>
         <View style={styles.headerTopRow}>
@@ -138,7 +139,7 @@ export default function CatalogoScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 22,
@@ -160,31 +161,31 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: 'rgba(230, 57, 80, 0.2)',
+    backgroundColor: 'rgba(0, 184, 212, 0.2)',
     borderWidth: 1,
-    borderColor: 'rgba(230, 57, 80, 0.4)',
+    borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
   },
   miniAvatarText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 12,
     fontWeight: '700',
   },
   userGreeting: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 14,
     fontWeight: '600',
   },
   headerTitle: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: colors.text,
   },
   headerSubtitle: {
     fontSize: 13,
-    color: '#A9A6B2',
+    color: colors.textSecondary,
     marginTop: 2,
   },
   chipsScroll: {
@@ -199,24 +200,24 @@ const styles = StyleSheet.create({
     height: 34,
     paddingHorizontal: 16,
     borderRadius: 20,
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
     marginHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
   chipAtivo: {
-    backgroundColor: '#E63950',
-    borderColor: '#E63950',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   chipText: {
-    color: '#C7C4D0',
+    color: colors.textSecondary,
     fontSize: 13,
     fontWeight: '600',
   },
   chipTextAtivo: {
-    color: '#FFFFFF',
+    color: colors.text,
   },
   lista: {
     paddingHorizontal: 18,
@@ -225,18 +226,18 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
   },
   capa: {
     width: 60,
     height: 80,
     borderRadius: 10,
-    backgroundColor: '#2A2733',
+    backgroundColor: colors.backgroundTertiary,
   },
   cardInfo: {
     flex: 1,
@@ -250,31 +251,31 @@ const styles = StyleSheet.create({
   },
   cardCategoria: {
     fontSize: 11,
-    color: '#E63950',
+    color: colors.primary,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
   cardYear: {
     fontSize: 11,
-    color: '#8A8794',
+    color: colors.textMuted,
     fontWeight: '600',
     marginLeft: 4,
   },
   cardTitulo: {
     fontSize: 16,
-    color: '#FFFFFF',
+    color: colors.text,
     fontWeight: '700',
     marginBottom: 4,
   },
   cardDescricao: {
     fontSize: 12,
-    color: '#A9A6B2',
+    color: colors.textSecondary,
     lineHeight: 16,
   },
   chevron: {
     fontSize: 26,
-    color: '#4C4956',
+    color: colors.textMuted,
     marginLeft: 8,
   },
 });
