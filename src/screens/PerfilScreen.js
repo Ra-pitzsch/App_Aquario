@@ -175,7 +175,7 @@ export default function PerfilScreen({ navigation }) {
               </Text>
               <TouchableOpacity
                 style={styles.exploreButton}
-                onPress={() => navigation.navigate('List')}
+                onPress={() => navigation.navigate('Catálogo')}
                 activeOpacity={0.8}
               >
                 <Text style={styles.exploreButtonText}>Explorar Catálogo</Text>
