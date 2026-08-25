@@ -9,6 +9,7 @@ import {
   StatusBar,
   Image,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import catalog from '../data/catalog.json';
 import { catalogImages } from '../data/images';
 import colors from '../styles/theme';
@@ -30,6 +31,7 @@ const TYPE_LABELS = {
 
 export default function CatalogoScreen({ navigation }) {
   const [categoriaAtiva, setCategoriaAtiva] = useState('Todos');
+  const insets = useSafeAreaInsets();
 
   const filtroTipo = CATEGORIAS.find((c) => c.label === categoriaAtiva)?.type;
 
@@ -41,7 +43,7 @@ export default function CatalogoScreen({ navigation }) {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.background} />
 
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 16 }]}>
         <Text style={styles.headerTitle}>Catálogo</Text>
         <Text style={styles.headerSubtitle}>Explore itens para avaliar e descobrir</Text>
       </View>
@@ -131,7 +133,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 22,
-    paddingTop: 54,
     paddingBottom: 14,
   },
   headerTitle: {

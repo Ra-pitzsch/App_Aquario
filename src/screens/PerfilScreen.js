@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { getRatingsByUser } from '../utils/ratings';
 import { getItemById } from '../services/catalogService';
@@ -41,6 +42,7 @@ export default function PerfilScreen({ navigation }) {
   const { user, logout } = useAuth();
   const [userRatings, setUserRatings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const insets = useSafeAreaInsets();
 
   // Recarrega as avaliações do usuário sempre que a tela ganha foco
   useFocusEffect(
@@ -114,17 +116,10 @@ export default function PerfilScreen({ navigation }) {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.background} />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.backButtonText}>‹ Voltar</Text>
-        </TouchableOpacity>
+      {/* Header Limpo e Consistente */}
+      <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 16 }]}>
         <Text style={styles.headerTitle}>Meu Perfil</Text>
-        <View style={styles.headerPlaceholder} />
+        <Text style={styles.headerSubtitle}>Gerencie suas informações e avaliações</Text>
       </View>
 
       <ScrollView
@@ -278,7 +273,7 @@ export default function PerfilScreen({ navigation }) {
             onPress={handleLogout}
             activeOpacity={0.8}
           >
-            <Text style={styles.logoutButtonText}>🚪 Sair da Conta</Text>
+            <Text style={styles.logoutButtonText}>Sair da Conta</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -292,36 +287,24 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 18,
-    paddingTop: 48,
+    paddingHorizontal: 22,
     paddingBottom: 14,
-    backgroundColor: colors.background,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  backButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-  },
-  backButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: '700',
   },
   headerTitle: {
+    fontSize: 28,
+    fontWeight: '800',
     color: colors.text,
-    fontSize: 17,
-    fontWeight: '700',
+    letterSpacing: -0.5,
   },
-  headerPlaceholder: {
-    width: 60,
+  headerSubtitle: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    marginTop: 3,
   },
   scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
+    paddingHorizontal: 18,
+    paddingTop: 4,
+    paddingBottom: 36,
   },
   profileCard: {
     backgroundColor: colors.backgroundSecondary,

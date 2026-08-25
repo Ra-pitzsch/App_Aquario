@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import catalog from '../data/catalog.json';
 import { catalogImages } from '../data/images';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import colors from '../styles/theme';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -239,6 +240,7 @@ function FloatingItem({ item, position, index, navigation }) {
 
 export default function HomeScreen({ navigation }) {
   const itemsToDisplay = catalog.slice(0, 8);
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.container}>
@@ -250,7 +252,7 @@ export default function HomeScreen({ navigation }) {
       <AmbientBubble startX={SCREEN_WIDTH * 0.75} size={18} duration={6500} delay={3000} />
       <AmbientBubble startX={SCREEN_WIDTH * 0.88} size={10} duration={9000} delay={800} />
 
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 16 }]}>
         <Text style={styles.headerTitle}>Aquário</Text>
         <Text style={styles.headerSubtitle}>
           Toque em uma mídia para ver detalhes e avaliar
@@ -282,7 +284,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 22,
-    paddingTop: 54,
     paddingBottom: 12,
     zIndex: 10,
   },

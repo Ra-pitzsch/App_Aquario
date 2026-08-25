@@ -9,6 +9,7 @@ import {
   ScrollView,
   StatusBar,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import AuthLink from '../components/AuthLink';
@@ -21,6 +22,7 @@ export default function CadastroScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const { register, login } = useAuth();
 
@@ -66,7 +68,10 @@ export default function CadastroScreen({ navigation }) {
     >
       <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       <ScrollView
-        contentContainerStyle={styles.scroll}
+        contentContainerStyle={[
+          styles.scroll,
+          { paddingTop: insets.top > 0 ? insets.top + 16 : 24 },
+        ]}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
