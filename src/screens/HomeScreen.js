@@ -18,10 +18,10 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Ícones/badges por tipo de mídia
 const TYPE_CONFIG = {
-  filme: { label: 'Filme', emoji: '🎬', color: colors.primary },
-  serie: { label: 'Série', emoji: '📺', color: '#38BDF8' },
-  musica: { label: 'Música', emoji: '🎵', color: colors.accent },
-  documentario: { label: 'Doc', emoji: '🏔️', color: '#2DD4BF' },
+  filme: { label: 'Filme', color: colors.primary },
+  serie: { label: 'Série', color: '#38BDF8' },
+  musica: { label: 'Música', color: colors.accent },
+  documentario: { label: 'Doc', color: '#2DD4BF' },
 };
 
 // Posições orgânicas espalhadas pelo "aquário"
@@ -172,7 +172,6 @@ function FloatingItem({ item, position, index, navigation }) {
   const imageSource = catalogImages[item.id];
   const typeInfo = TYPE_CONFIG[item.type] || {
     label: item.type,
-    emoji: '🎬',
     color: colors.primary,
   };
 
@@ -210,7 +209,7 @@ function FloatingItem({ item, position, index, navigation }) {
           />
         ) : (
           <View style={styles.imagePlaceholder}>
-            <Text style={styles.placeholderEmoji}>{typeInfo.emoji}</Text>
+            <Text style={styles.placeholderText}>{typeInfo.label}</Text>
           </View>
         )}
 
@@ -222,7 +221,6 @@ function FloatingItem({ item, position, index, navigation }) {
             { backgroundColor: colors.backgroundSecondary, borderColor: typeInfo.color },
           ]}
         >
-          <Text style={styles.typeEmoji}>{typeInfo.emoji}</Text>
           <Text style={[styles.typeText, { color: typeInfo.color }]}>
             {typeInfo.label}
           </Text>
@@ -253,9 +251,6 @@ export default function HomeScreen({ navigation }) {
       <AmbientBubble startX={SCREEN_WIDTH * 0.88} size={10} duration={9000} delay={800} />
 
       <View style={styles.header}>
-        <View style={styles.headerBadge}>
-          <Text style={styles.headerBadgeText}>🐠 RECOMENDAÇÕES VIVAS</Text>
-        </View>
         <Text style={styles.headerTitle}>Aquário</Text>
         <Text style={styles.headerSubtitle}>
           Toque em uma mídia para ver detalhes e avaliar
@@ -287,25 +282,9 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 22,
-    paddingTop: 48,
-    paddingBottom: 10,
+    paddingTop: 54,
+    paddingBottom: 12,
     zIndex: 10,
-  },
-  headerBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(0, 184, 212, 0.15)',
-    borderWidth: 1,
-    borderColor: 'rgba(0, 184, 212, 0.4)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginBottom: 6,
-  },
-  headerBadgeText: {
-    color: colors.primary,
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.8,
   },
   headerTitle: {
     fontSize: 28,
@@ -316,7 +295,7 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 13,
     color: colors.textSecondary,
-    marginTop: 2,
+    marginTop: 3,
   },
   aquariumArea: {
     flex: 1,
@@ -350,9 +329,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundTertiary,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 8,
   },
-  placeholderEmoji: {
-    fontSize: 32,
+  placeholderText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
   },
   overlayGradient: {
     ...StyleSheet.absoluteFillObject,
@@ -364,19 +347,16 @@ const styles = StyleSheet.create({
     left: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 6,
+    paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 8,
     borderWidth: 1,
-  },
-  typeEmoji: {
-    fontSize: 9,
-    marginRight: 3,
   },
   typeText: {
     fontSize: 9,
     fontWeight: '800',
     textTransform: 'uppercase',
+    letterSpacing: 0.4,
   },
   itemBottomInfo: {
     position: 'absolute',
