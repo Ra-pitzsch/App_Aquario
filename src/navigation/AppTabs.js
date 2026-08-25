@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import colors from '../styles/theme';
+import { useTheme } from '../context/ThemeContext';
 
 import HomeScreen from '../screens/HomeScreen';
 import CatalogoScreen from '../screens/CatalogoScreen';
@@ -11,6 +11,8 @@ import PerfilScreen from '../screens/PerfilScreen';
 const Tab = createBottomTabNavigator();
 
 export default function AppTabs() {
+  const { colors } = useTheme();
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -18,7 +20,13 @@ export default function AppTabs() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            backgroundColor: colors.backgroundSecondary,
+            borderTopColor: colors.border,
+          },
+        ],
         tabBarLabelStyle: styles.tabBarLabel,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -62,8 +70,6 @@ export default function AppTabs() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: colors.backgroundSecondary,
-    borderTopColor: colors.border,
     borderTopWidth: 1,
     height: 60,
     paddingBottom: 8,

@@ -14,11 +14,11 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { getItemById } from '../services/catalogService';
 import { saveRating, getRatingByUser } from '../utils/ratings';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
-import colors from '../styles/theme';
 
 const RATING_LABELS = {
   1: '1 de 5 • Ruim 🙁',
@@ -39,6 +39,7 @@ export default function AvaliarScreen({ route, navigation }) {
   const { id } = route?.params || {};
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  const { colors, isDark } = useTheme();
 
   const item = useMemo(() => getItemById(id), [id]);
 
@@ -117,18 +118,35 @@ export default function AvaliarScreen({ route, navigation }) {
 
   if (!item) {
     return (
-      <View style={[styles.errorContainer, { paddingTop: insets.top > 0 ? insets.top + 20 : 24 }]}>
-        <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+      <View
+        style={[
+          styles.errorContainer,
+          {
+            backgroundColor: colors.background,
+            paddingTop: insets.top > 0 ? insets.top + 20 : 24,
+          },
+        ]}
+      >
+        <StatusBar
+          barStyle={isDark ? 'light-content' : 'dark-content'}
+          backgroundColor={colors.background}
+        />
         <Text style={styles.errorEmoji}>🔍</Text>
-        <Text style={styles.errorTitle}>Item não encontrado</Text>
-        <Text style={styles.errorSubtitle}>
+        <Text style={[styles.errorTitle, { color: colors.text }]}>Item não encontrado</Text>
+        <Text style={[styles.errorSubtitle, { color: colors.textSecondary }]}>
           Não foi possível identificar o item para avaliar.
         </Text>
         <TouchableOpacity
-          style={styles.backLink}
+          style={[
+            styles.backLink,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.border,
+            },
+          ]}
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.backLinkText}>Voltar</Text>
+          <Text style={[styles.backLinkText, { color: colors.primary }]}>Voltar</Text>
         </TouchableOpacity>
       </View>
     );
@@ -136,21 +154,33 @@ export default function AvaliarScreen({ route, navigation }) {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={colors.background}
+      />
 
       {/* Header */}
-      <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 12 }]}>
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: colors.background,
+            borderBottomColor: colors.border,
+            paddingTop: insets.top > 0 ? insets.top + 8 : 12,
+          },
+        ]}
+      >
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
           activeOpacity={0.7}
         >
-          <Text style={styles.backButtonText}>‹ Voltar</Text>
+          <Text style={[styles.backButtonText, { color: colors.primary }]}>‹ Voltar</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Avaliar Item</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Avaliar Item</Text>
         <View style={styles.headerPlaceholder} />
       </View>
 
@@ -160,39 +190,60 @@ export default function AvaliarScreen({ route, navigation }) {
         showsVerticalScrollIndicator={false}
       >
         {/* Card do Item Resumido */}
-        <View style={styles.itemCard}>
+        <View
+          style={[
+            styles.itemCard,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.border,
+            },
+          ]}
+        >
           {item.image ? (
             <Image
               source={item.image}
-              style={styles.itemImage}
+              style={[styles.itemImage, { backgroundColor: colors.backgroundTertiary }]}
               resizeMode="cover"
             />
           ) : (
-            <View style={styles.itemPlaceholder}>
+            <View
+              style={[
+                styles.itemPlaceholder,
+                { backgroundColor: colors.backgroundTertiary },
+              ]}
+            >
               <Text style={styles.itemPlaceholderEmoji}>🎬</Text>
             </View>
           )}
 
           <View style={styles.itemInfo}>
             <View style={styles.typeBadge}>
-              <Text style={styles.typeBadgeText}>
+              <Text style={[styles.typeBadgeText, { color: colors.primary }]}>
                 {TYPE_LABELS[item.type] || item.type}
               </Text>
             </View>
-            <Text style={styles.itemTitle} numberOfLines={2}>
+            <Text style={[styles.itemTitle, { color: colors.text }]} numberOfLines={2}>
               {item.title}
             </Text>
-            <Text style={styles.itemYear}>{item.year}</Text>
+            <Text style={[styles.itemYear, { color: colors.textMuted }]}>{item.year}</Text>
           </View>
         </View>
 
         {loadingRating ? (
           <View style={styles.loadingBox}>
             <ActivityIndicator size="small" color={colors.primary} />
-            <Text style={styles.loadingText}>Carregando avaliação...</Text>
+            <Text style={[styles.loadingText, { color: colors.textMuted }]}>Carregando avaliação...</Text>
           </View>
         ) : (
-          <View style={styles.formCard}>
+          <View
+            style={[
+              styles.formCard,
+              {
+                backgroundColor: colors.backgroundSecondary,
+                borderColor: colors.border,
+              },
+            ]}
+          >
             {isUpdating && (
               <View style={styles.updatingNotice}>
                 <Text style={styles.updatingNoticeText}>
@@ -202,8 +253,16 @@ export default function AvaliarScreen({ route, navigation }) {
             )}
 
             {/* Seletor de Estrelas */}
-            <Text style={styles.sectionLabel}>Sua Nota *</Text>
-            <View style={styles.starsContainer}>
+            <Text style={[styles.sectionLabel, { color: colors.text }]}>Sua Nota *</Text>
+            <View
+              style={[
+                styles.starsContainer,
+                {
+                  backgroundColor: colors.background,
+                  borderColor: colors.border,
+                },
+              ]}
+            >
               <View style={styles.starsRow}>
                 {[1, 2, 3, 4, 5].map((starValue) => {
                   const isFilled = starValue <= rating;
@@ -217,7 +276,11 @@ export default function AvaliarScreen({ route, navigation }) {
                       <Text
                         style={[
                           styles.starIcon,
-                          isFilled ? styles.starFilled : styles.starEmpty,
+                          {
+                            color: isFilled
+                              ? colors.star
+                              : colors.starInactive,
+                          },
                         ]}
                       >
                         ★
@@ -227,7 +290,7 @@ export default function AvaliarScreen({ route, navigation }) {
                 })}
               </View>
 
-              <Text style={styles.ratingFeedback}>
+              <Text style={[styles.ratingFeedback, { color: colors.textSecondary }]}>
                 {rating > 0
                   ? RATING_LABELS[rating]
                   : 'Toque nas estrelas para selecionar uma nota'}
@@ -237,8 +300,8 @@ export default function AvaliarScreen({ route, navigation }) {
             {/* Campo de Comentário */}
             <View style={styles.commentSection}>
               <View style={styles.commentHeader}>
-                <Text style={styles.sectionLabel}>Comentário</Text>
-                <Text style={styles.optionalBadge}>Opcional</Text>
+                <Text style={[styles.sectionLabel, { color: colors.text }]}>Comentário</Text>
+                <Text style={[styles.optionalBadge, { color: colors.textMuted }]}>Opcional</Text>
               </View>
 
               <CustomInput
@@ -269,7 +332,6 @@ export default function AvaliarScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -277,21 +339,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 18,
     paddingBottom: 14,
-    backgroundColor: colors.background,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   backButton: {
     paddingVertical: 6,
     paddingHorizontal: 8,
   },
   backButtonText: {
-    color: colors.primary,
     fontSize: 16,
     fontWeight: '700',
   },
   headerTitle: {
-    color: colors.text,
     fontSize: 17,
     fontWeight: '700',
   },
@@ -305,24 +363,20 @@ const styles = StyleSheet.create({
   itemCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     padding: 14,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: colors.border,
   },
   itemImage: {
     width: 60,
     height: 80,
     borderRadius: 10,
-    backgroundColor: colors.backgroundTertiary,
   },
   itemPlaceholder: {
     width: 60,
     height: 80,
     borderRadius: 10,
-    backgroundColor: colors.backgroundTertiary,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -344,7 +398,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   typeBadgeText: {
-    color: colors.primary,
     fontSize: 10,
     fontWeight: '700',
     textTransform: 'uppercase',
@@ -353,20 +406,16 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: colors.text,
     marginBottom: 2,
   },
   itemYear: {
     fontSize: 12,
-    color: colors.textMuted,
     fontWeight: '500',
   },
   formCard: {
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 20,
     padding: 20,
     borderWidth: 1,
-    borderColor: colors.border,
   },
   updatingNotice: {
     backgroundColor: 'rgba(255, 193, 7, 0.12)',
@@ -377,7 +426,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   updatingNoticeText: {
-    color: colors.star,
+    color: '#FFA000',
     fontSize: 12,
     fontWeight: '600',
     lineHeight: 18,
@@ -385,16 +434,13 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 15,
     fontWeight: '700',
-    color: colors.text,
     marginBottom: 12,
   },
   starsContainer: {
     alignItems: 'center',
     paddingVertical: 14,
-    backgroundColor: colors.background,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
     marginBottom: 20,
   },
   starsRow: {
@@ -409,16 +455,9 @@ const styles = StyleSheet.create({
   starIcon: {
     fontSize: 38,
   },
-  starFilled: {
-    color: colors.star,
-  },
-  starEmpty: {
-    color: colors.starInactive,
-  },
   ratingFeedback: {
     fontSize: 13,
     fontWeight: '600',
-    color: colors.textSecondary,
   },
   commentSection: {
     marginTop: 4,
@@ -431,7 +470,6 @@ const styles = StyleSheet.create({
   },
   optionalBadge: {
     fontSize: 11,
-    color: colors.textMuted,
     fontWeight: '600',
     textTransform: 'uppercase',
   },
@@ -444,13 +482,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingText: {
-    color: colors.textMuted,
     marginTop: 10,
     fontSize: 14,
   },
   errorContainer: {
     flex: 1,
-    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
@@ -460,13 +496,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   errorTitle: {
-    color: colors.text,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 8,
   },
   errorSubtitle: {
-    color: colors.textSecondary,
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 24,
@@ -474,13 +508,10 @@ const styles = StyleSheet.create({
   backLink: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.border,
   },
   backLinkText: {
-    color: colors.primary,
     fontWeight: '700',
     fontSize: 14,
   },

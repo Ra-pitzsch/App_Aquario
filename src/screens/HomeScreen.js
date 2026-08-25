@@ -13,17 +13,9 @@ import {
 import catalog from '../data/catalog.json';
 import { catalogImages } from '../data/images';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import colors from '../styles/theme';
+import { useTheme } from '../context/ThemeContext';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-
-// Ícones/badges por tipo de mídia
-const TYPE_CONFIG = {
-  filme: { label: 'Filme', color: colors.primary },
-  serie: { label: 'Série', color: '#38BDF8' },
-  musica: { label: 'Música', color: colors.accent },
-  documentario: { label: 'Doc', color: '#2DD4BF' },
-};
 
 // Posições orgânicas espalhadas pelo "aquário"
 const POSITIONS = [
@@ -104,6 +96,14 @@ function AmbientBubble({ startX, size, duration, delay }) {
 function FloatingItem({ item, position, index, navigation }) {
   const floatY = useRef(new Animated.Value(0)).current;
   const floatX = useRef(new Animated.Value(0)).current;
+  const { colors } = useTheme();
+
+  const typeConfig = {
+    filme: { label: 'Filme', color: colors.primary },
+    serie: { label: 'Série', color: '#38BDF8' },
+    musica: { label: 'Música', color: colors.accent },
+    documentario: { label: 'Doc', color: '#2DD4BF' },
+  };
 
   useEffect(() => {
     const durationY = 2600 + (index % 4) * 450;
@@ -171,7 +171,7 @@ function FloatingItem({ item, position, index, navigation }) {
   }, []);
 
   const imageSource = catalogImages[item.id];
-  const typeInfo = TYPE_CONFIG[item.type] || {
+  const typeInfo = typeConfig[item.type] || {
     label: item.type,
     color: colors.primary,
   };
@@ -197,7 +197,13 @@ function FloatingItem({ item, position, index, navigation }) {
       <TouchableOpacity
         style={[
           styles.itemCard,
-          { width: cardWidth, height: cardHeight },
+          {
+            width: cardWidth,
+            height: cardHeight,
+            backgroundColor: colors.backgroundSecondary,
+            borderColor: colors.borderLight,
+            shadowColor: colors.primary,
+          },
         ]}
         activeOpacity={0.85}
         onPress={() => navigation.navigate('Detalhes', { id: item.id })}
@@ -209,8 +215,10 @@ function FloatingItem({ item, position, index, navigation }) {
             resizeMode="cover"
           />
         ) : (
-          <View style={styles.imagePlaceholder}>
-            <Text style={styles.placeholderText}>{typeInfo.label}</Text>
+          <View style={[styles.imagePlaceholder, { backgroundColor: colors.backgroundTertiary }]}>
+            <Text style={[styles.placeholderText, { color: colors.textSecondary }]}>
+              {typeInfo.label}
+            </Text>
           </View>
         )}
 
@@ -227,11 +235,16 @@ function FloatingItem({ item, position, index, navigation }) {
           </Text>
         </View>
 
-        <View style={styles.itemBottomInfo}>
-          <Text style={styles.itemTitle} numberOfLines={1}>
+        <View
+          style={[
+            styles.itemBottomInfo,
+            { backgroundColor: colors.backgroundSecondary + 'EA' },
+          ]}
+        >
+          <Text style={[styles.itemTitle, { color: colors.text }]} numberOfLines={1}>
             {item.title}
           </Text>
-          <Text style={styles.itemYear}>{item.year}</Text>
+          <Text style={[styles.itemYear, { color: colors.textSecondary }]}>{item.year}</Text>
         </View>
       </TouchableOpacity>
     </Animated.View>
@@ -241,10 +254,14 @@ function FloatingItem({ item, position, index, navigation }) {
 export default function HomeScreen({ navigation }) {
   const itemsToDisplay = catalog.slice(0, 8);
   const insets = useSafeAreaInsets();
+  const { colors, isDark } = useTheme();
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={colors.background}
+      />
 
       {/* Bolhas sutis de ambiente */}
       <AmbientBubble startX={SCREEN_WIDTH * 0.15} size={14} duration={7000} delay={0} />
@@ -253,8 +270,8 @@ export default function HomeScreen({ navigation }) {
       <AmbientBubble startX={SCREEN_WIDTH * 0.88} size={10} duration={9000} delay={800} />
 
       <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 16 }]}>
-        <Text style={styles.headerTitle}>Aquário</Text>
-        <Text style={styles.headerSubtitle}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Aquário</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
           Toque em uma mídia para ver detalhes e avaliar
         </Text>
       </View>
@@ -280,7 +297,6 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 22,
@@ -290,12 +306,10 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: '800',
-    color: colors.text,
     letterSpacing: -0.5,
   },
   headerSubtitle: {
     fontSize: 13,
-    color: colors.textSecondary,
     marginTop: 3,
   },
   aquariumArea: {
@@ -310,10 +324,7 @@ const styles = StyleSheet.create({
   itemCard: {
     borderRadius: 18,
     overflow: 'hidden',
-    backgroundColor: colors.backgroundSecondary,
     borderWidth: 1.5,
-    borderColor: colors.borderLight,
-    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
@@ -327,7 +338,6 @@ const styles = StyleSheet.create({
   imagePlaceholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: colors.backgroundTertiary,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 8,
@@ -335,12 +345,11 @@ const styles = StyleSheet.create({
   placeholderText: {
     fontSize: 12,
     fontWeight: '700',
-    color: colors.textSecondary,
     textTransform: 'uppercase',
   },
   overlayGradient: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(7, 26, 43, 0.45)',
+    backgroundColor: 'rgba(7, 26, 43, 0.25)',
   },
   typeBadge: {
     position: 'absolute',
@@ -365,22 +374,19 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: 10,
-    backgroundColor: 'rgba(7, 26, 43, 0.92)',
   },
   itemTitle: {
     fontSize: 12,
     fontWeight: '700',
-    color: colors.text,
   },
   itemYear: {
     fontSize: 10,
-    color: colors.textSecondary,
     marginTop: 1,
     fontWeight: '600',
   },
   bubble: {
     position: 'absolute',
-    backgroundColor: 'rgba(77, 208, 225, 0.5)',
+    backgroundColor: 'rgba(77, 208, 225, 0.4)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
     zIndex: 1,

@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '../context/ThemeContext';
 import { getItemById } from '../services/catalogService';
 import { getAverageRating, getRatingsWithUserDetails } from '../utils/ratings';
 import CustomButton from '../components/CustomButton';
-import colors from '../styles/theme';
 
 const TYPE_LABELS = {
   filme: 'Filme',
@@ -38,19 +38,27 @@ function formatReviewDate(dateString) {
 
 function Estrelas({ nota = 0, total = 0 }) {
   const cheias = Math.round(nota);
+  const { colors } = useTheme();
+
   return (
     <View style={styles.starsContainer}>
       <View style={styles.starsRow}>
         {[1, 2, 3, 4, 5].map((i) => (
-          <Text key={i} style={styles.star}>
+          <Text
+            key={i}
+            style={[
+              styles.star,
+              { color: i <= cheias && nota > 0 ? colors.star : colors.starInactive },
+            ]}
+          >
             {i <= cheias && nota > 0 ? '★' : '☆'}
           </Text>
         ))}
       </View>
-      <Text style={styles.notaValue}>
+      <Text style={[styles.notaValue, { color: colors.text }]}>
         {nota > 0 ? nota.toFixed(1) : 'Sem avaliações'}
       </Text>
-      <Text style={styles.notaLabel}>
+      <Text style={[styles.notaLabel, { color: colors.textMuted }]}>
         {total > 0
           ? `/ 5.0 (${total} ${total === 1 ? 'avaliação' : 'avaliações'})`
           : ''}
@@ -64,6 +72,7 @@ export default function DetalhesScreen({ route, navigation }) {
   const [ratingStats, setRatingStats] = useState({ average: 0, total: 0 });
   const [ratingsList, setRatingsList] = useState([]);
   const insets = useSafeAreaInsets();
+  const { colors, isDark } = useTheme();
 
   const item = useMemo(() => getItemById(id), [id]);
 
@@ -102,37 +111,66 @@ export default function DetalhesScreen({ route, navigation }) {
 
   if (!item) {
     return (
-      <View style={[styles.errorContainer, { paddingTop: insets.top > 0 ? insets.top + 20 : 24 }]}>
-        <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+      <View
+        style={[
+          styles.errorContainer,
+          {
+            backgroundColor: colors.background,
+            paddingTop: insets.top > 0 ? insets.top + 20 : 24,
+          },
+        ]}
+      >
+        <StatusBar
+          barStyle={isDark ? 'light-content' : 'dark-content'}
+          backgroundColor={colors.background}
+        />
         <Text style={styles.errorEmoji}>🔍</Text>
-        <Text style={styles.errorTitle}>Item não encontrado</Text>
-        <Text style={styles.errorSubtitle}>
+        <Text style={[styles.errorTitle, { color: colors.text }]}>Item não encontrado</Text>
+        <Text style={[styles.errorSubtitle, { color: colors.textSecondary }]}>
           Não foi possível carregar as informações deste item.
         </Text>
         <TouchableOpacity
-          style={styles.backLink}
+          style={[
+            styles.backLink,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.border,
+            },
+          ]}
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.backLinkText}>Voltar ao catálogo</Text>
+          <Text style={[styles.backLinkText, { color: colors.primary }]}>Voltar ao catálogo</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={colors.background}
+      />
 
       {/* Header Superior com Botão de Voltar */}
-      <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 12 }]}>
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: colors.background,
+            borderBottomColor: colors.border,
+            paddingTop: insets.top > 0 ? insets.top + 8 : 12,
+          },
+        ]}
+      >
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
           activeOpacity={0.7}
         >
-          <Text style={styles.backButtonText}>‹ Voltar</Text>
+          <Text style={[styles.backButtonText, { color: colors.primary }]}>‹ Voltar</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Detalhes</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Detalhes</Text>
         <View style={styles.headerPlaceholder} />
       </View>
 
@@ -141,42 +179,58 @@ export default function DetalhesScreen({ route, navigation }) {
         showsVerticalScrollIndicator={false}
       >
         {/* Capa / Imagem Grande */}
-        <View style={styles.coverWrapper}>
+        <View style={[styles.coverWrapper, { shadowColor: colors.primary }]}>
           {item.image ? (
             <Image
               source={item.image}
-              style={styles.coverImage}
+              style={[styles.coverImage, { backgroundColor: colors.backgroundSecondary }]}
               resizeMode="cover"
             />
           ) : (
-            <View style={styles.coverPlaceholder}>
+            <View
+              style={[
+                styles.coverPlaceholder,
+                {
+                  backgroundColor: colors.backgroundSecondary,
+                  borderColor: colors.border,
+                },
+              ]}
+            >
               <Text style={styles.coverPlaceholderEmoji}>🎬</Text>
             </View>
           )}
         </View>
 
         {/* Informações Principais */}
-        <View style={styles.infoCard}>
+        <View
+          style={[
+            styles.infoCard,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.border,
+            },
+          ]}
+        >
           <View style={styles.badgeRow}>
             <View style={styles.typeBadge}>
-              <Text style={styles.typeBadgeText}>
+              <Text style={[styles.typeBadgeText, { color: colors.primary }]}>
                 {TYPE_LABELS[item.type] || item.type}
               </Text>
             </View>
-            <Text style={styles.yearText}>{item.year}</Text>
+            <Text style={[styles.yearText, { color: colors.textMuted }]}>{item.year}</Text>
           </View>
 
-          <Text style={styles.title}>{item.title}</Text>
+          <Text style={[styles.title, { color: colors.text }]}>{item.title}</Text>
 
           {/* Nota Média Dinâmica */}
           <Estrelas nota={ratingStats.average} total={ratingStats.total} />
 
           {/* Divisor */}
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
           {/* Sinopse / Descrição */}
-          <Text style={styles.sectionTitle}>Sinopse</Text>
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Sinopse</Text>
+          <Text style={[styles.description, { color: colors.textSecondary }]}>{item.description}</Text>
 
           {/* Ação de Avaliar */}
           <View style={styles.actionContainer}>
@@ -190,10 +244,10 @@ export default function DetalhesScreen({ route, navigation }) {
         {/* Seção de Avaliações e Comentários */}
         <View style={styles.reviewsSection}>
           <View style={styles.reviewsHeaderRow}>
-            <Text style={styles.reviewsSectionTitle}>Avaliações</Text>
+            <Text style={[styles.reviewsSectionTitle, { color: colors.text }]}>Avaliações</Text>
             {ratingsList.length > 0 && (
               <View style={styles.reviewsCountBadge}>
-                <Text style={styles.reviewsCountBadgeText}>
+                <Text style={[styles.reviewsCountBadgeText, { color: colors.primary }]}>
                   {ratingsList.length}
                 </Text>
               </View>
@@ -201,12 +255,20 @@ export default function DetalhesScreen({ route, navigation }) {
           </View>
 
           {ratingsList.length === 0 ? (
-            <View style={styles.emptyReviewsBox}>
+            <View
+              style={[
+                styles.emptyReviewsBox,
+                {
+                  backgroundColor: colors.backgroundSecondary,
+                  borderColor: colors.border,
+                },
+              ]}
+            >
               <Text style={styles.emptyReviewsEmoji}>💬</Text>
-              <Text style={styles.emptyReviewsTitle}>
+              <Text style={[styles.emptyReviewsTitle, { color: colors.text }]}>
                 Nenhuma avaliação ainda
               </Text>
-              <Text style={styles.emptyReviewsSubtitle}>
+              <Text style={[styles.emptyReviewsSubtitle, { color: colors.textSecondary }]}>
                 Seja o primeiro a avaliar este item!
               </Text>
             </View>
@@ -222,24 +284,35 @@ export default function DetalhesScreen({ route, navigation }) {
                     key={review.userId || index}
                     style={[
                       styles.reviewCard,
+                      {
+                        backgroundColor: colors.backgroundSecondary,
+                        borderColor: colors.border,
+                      },
                       index === ratingsList.length - 1 && styles.reviewCardLast,
                     ]}
                   >
                     <View style={styles.reviewHeader}>
                       <View style={styles.reviewUserGroup}>
-                        <View style={styles.avatar}>
-                          <Text style={styles.avatarText}>
+                        <View
+                          style={[
+                            styles.avatar,
+                            {
+                              borderColor: colors.primary,
+                            },
+                          ]}
+                        >
+                          <Text style={[styles.avatarText, { color: colors.primary }]}>
                             {review.userName
                               ? review.userName.charAt(0).toUpperCase()
                               : '👤'}
                           </Text>
                         </View>
                         <View>
-                          <Text style={styles.reviewUserName}>
+                          <Text style={[styles.reviewUserName, { color: colors.text }]}>
                             {review.userName || 'Usuário'}
                           </Text>
                           {review.date ? (
-                            <Text style={styles.reviewDate}>
+                            <Text style={[styles.reviewDate, { color: colors.textMuted }]}>
                               {formatReviewDate(review.date)}
                             </Text>
                           ) : null}
@@ -252,9 +325,12 @@ export default function DetalhesScreen({ route, navigation }) {
                             key={s}
                             style={[
                               styles.reviewStarIcon,
-                              s <= review.rating
-                                ? styles.reviewStarFilled
-                                : styles.reviewStarEmpty,
+                              {
+                                color:
+                                  s <= review.rating
+                                    ? colors.star
+                                    : colors.starInactive,
+                              },
                             ]}
                           >
                             ★
@@ -264,8 +340,8 @@ export default function DetalhesScreen({ route, navigation }) {
                     </View>
 
                     {hasComment && (
-                      <View style={styles.commentBox}>
-                        <Text style={styles.commentText}>
+                      <View style={[styles.commentBox, { borderTopColor: colors.border }]}>
+                        <Text style={[styles.commentText, { color: colors.textSecondary }]}>
                           {review.comment.trim()}
                         </Text>
                       </View>
@@ -284,7 +360,6 @@ export default function DetalhesScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -292,21 +367,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 18,
     paddingBottom: 14,
-    backgroundColor: colors.background,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   backButton: {
     paddingVertical: 6,
     paddingHorizontal: 8,
   },
   backButtonText: {
-    color: colors.primary,
     fontSize: 16,
     fontWeight: '700',
   },
   headerTitle: {
-    color: colors.text,
     fontSize: 17,
     fontWeight: '700',
   },
@@ -320,7 +391,6 @@ const styles = StyleSheet.create({
   coverWrapper: {
     alignItems: 'center',
     marginBottom: 20,
-    shadowColor: colors.primary,
     shadowOpacity: 0.25,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 8 },
@@ -330,15 +400,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 280,
     borderRadius: 18,
-    backgroundColor: colors.backgroundSecondary,
   },
   coverPlaceholder: {
     width: '100%',
     height: 280,
     borderRadius: 18,
-    backgroundColor: colors.backgroundSecondary,
     borderWidth: 1,
-    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -346,11 +413,9 @@ const styles = StyleSheet.create({
     fontSize: 54,
   },
   infoCard: {
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 20,
     padding: 22,
     borderWidth: 1,
-    borderColor: colors.border,
   },
   badgeRow: {
     flexDirection: 'row',
@@ -367,21 +432,18 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   typeBadgeText: {
-    color: colors.primary,
     fontSize: 11,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   yearText: {
-    color: colors.textMuted,
     fontSize: 13,
     fontWeight: '600',
   },
   title: {
     fontSize: 24,
     fontWeight: '800',
-    color: colors.text,
     marginBottom: 14,
     letterSpacing: 0.3,
   },
@@ -395,35 +457,29 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   star: {
-    color: colors.star,
     fontSize: 16,
     marginRight: 2,
   },
   notaValue: {
-    color: colors.text,
     fontWeight: '700',
     fontSize: 15,
     marginLeft: 4,
   },
   notaLabel: {
-    color: colors.textMuted,
     fontSize: 13,
     marginLeft: 4,
   },
   divider: {
     height: 1,
-    backgroundColor: colors.border,
     marginVertical: 16,
   },
   sectionTitle: {
-    color: colors.text,
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 8,
     letterSpacing: 0.3,
   },
   description: {
-    color: colors.textSecondary,
     fontSize: 14,
     lineHeight: 22,
     marginBottom: 20,
@@ -433,7 +489,6 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     flex: 1,
-    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
@@ -443,13 +498,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   errorTitle: {
-    color: colors.text,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 8,
   },
   errorSubtitle: {
-    color: colors.textSecondary,
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 24,
@@ -457,13 +510,10 @@ const styles = StyleSheet.create({
   backLink: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.border,
   },
   backLinkText: {
-    color: colors.primary,
     fontWeight: '700',
     fontSize: 14,
   },
@@ -476,7 +526,6 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   reviewsSectionTitle: {
-    color: colors.text,
     fontSize: 18,
     fontWeight: '800',
     letterSpacing: 0.3,
@@ -491,15 +540,12 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   reviewsCountBadgeText: {
-    color: colors.primary,
     fontSize: 12,
     fontWeight: '700',
   },
   emptyReviewsBox: {
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
@@ -509,13 +555,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   emptyReviewsTitle: {
-    color: colors.text,
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 4,
   },
   emptyReviewsSubtitle: {
-    color: colors.textSecondary,
     fontSize: 13,
     textAlign: 'center',
   },
@@ -523,10 +567,8 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   reviewCard: {
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
     padding: 16,
     marginBottom: 12,
   },
@@ -549,23 +591,19 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: 'rgba(0, 184, 212, 0.2)',
     borderWidth: 1,
-    borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
   avatarText: {
-    color: colors.primary,
     fontSize: 15,
     fontWeight: '700',
   },
   reviewUserName: {
-    color: colors.text,
     fontSize: 14,
     fontWeight: '700',
   },
   reviewDate: {
-    color: colors.textMuted,
     fontSize: 11,
     fontWeight: '500',
     marginTop: 2,
@@ -578,20 +616,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 1,
   },
-  reviewStarFilled: {
-    color: colors.star,
-  },
-  reviewStarEmpty: {
-    color: colors.starInactive,
-  },
   commentBox: {
     marginTop: 12,
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: colors.border,
   },
   commentText: {
-    color: colors.textSecondary,
     fontSize: 13,
     lineHeight: 20,
   },
