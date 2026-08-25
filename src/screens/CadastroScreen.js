@@ -14,7 +14,7 @@ import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import AuthLink from '../components/AuthLink';
 import { useAuth } from '../context/AuthContext';
-import colors from '../styles/theme';
+import { useTheme } from '../context/ThemeContext';
 
 export default function CadastroScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -23,6 +23,7 @@ export default function CadastroScreen({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const insets = useSafeAreaInsets();
+  const { colors, isDark } = useTheme();
 
   const { register, login } = useAuth();
 
@@ -63,10 +64,13 @@ export default function CadastroScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={colors.background}
+      />
       <ScrollView
         contentContainerStyle={[
           styles.scroll,
@@ -75,33 +79,46 @@ export default function CadastroScreen({ navigation }) {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <View style={styles.logoCircle}>
+          <View
+            style={[
+              styles.logoCircle,
+              { backgroundColor: colors.primary, shadowColor: colors.primary },
+            ]}
+          >
             <Text style={styles.logoEmoji}>🐠</Text>
           </View>
-          <Text style={styles.appName}>Aquário</Text>
-          <Text style={styles.subtitle}>
+          <Text style={[styles.appName, { color: colors.text }]}>Aquário</Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
             Crie sua conta para começar a registrar suas avaliações
           </Text>
         </View>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Criar Conta</Text>
+        <View
+          style={[
+            styles.card,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.border,
+            },
+          ]}
+        >
+          <Text style={[styles.cardTitle, { color: colors.text }]}>Criar Conta</Text>
 
-          <Text style={styles.label}>Nome</Text>
+          <Text style={[styles.label, { color: colors.textSecondary }]}>Nome</Text>
           <CustomInput
             placeholder="Seu nome completo"
             value={name}
             onChangeText={setName}
           />
 
-          <Text style={styles.label}>E-mail</Text>
+          <Text style={[styles.label, { color: colors.textSecondary }]}>E-mail</Text>
           <CustomInput
             placeholder="seuemail@exemplo.com"
             value={email}
             onChangeText={setEmail}
           />
 
-          <Text style={styles.label}>Senha</Text>
+          <Text style={[styles.label, { color: colors.textSecondary }]}>Senha</Text>
           <CustomInput
             placeholder="••••••••"
             secureTextEntry
@@ -109,7 +126,7 @@ export default function CadastroScreen({ navigation }) {
             onChangeText={setPassword}
           />
 
-          <Text style={styles.label}>Confirmar Senha</Text>
+          <Text style={[styles.label, { color: colors.textSecondary }]}>Confirmar Senha</Text>
           <CustomInput
             placeholder="••••••••"
             secureTextEntry
@@ -136,7 +153,6 @@ export default function CadastroScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   scroll: {
     flexGrow: 1,
@@ -151,11 +167,9 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
-    shadowColor: colors.primary,
     shadowOpacity: 0.4,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
@@ -167,33 +181,27 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 26,
     fontWeight: '800',
-    color: colors.text,
     letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 13,
-    color: colors.textSecondary,
     marginTop: 4,
     textAlign: 'center',
     paddingHorizontal: 16,
   },
   card: {
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 20,
     padding: 22,
     borderWidth: 1,
-    borderColor: colors.border,
   },
   cardTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: colors.text,
     marginBottom: 18,
   },
   label: {
     fontSize: 12,
     fontWeight: '600',
-    color: colors.textSecondary,
     marginBottom: 6,
     textTransform: 'uppercase',
     letterSpacing: 0.4,

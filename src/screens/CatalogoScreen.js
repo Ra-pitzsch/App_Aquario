@@ -10,9 +10,9 @@ import {
   Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '../context/ThemeContext';
 import catalog from '../data/catalog.json';
 import { catalogImages } from '../data/images';
-import colors from '../styles/theme';
 
 const CATEGORIAS = [
   { label: 'Todos', type: null },
@@ -32,6 +32,7 @@ const TYPE_LABELS = {
 export default function CatalogoScreen({ navigation }) {
   const [categoriaAtiva, setCategoriaAtiva] = useState('Todos');
   const insets = useSafeAreaInsets();
+  const { colors, isDark } = useTheme();
 
   const filtroTipo = CATEGORIAS.find((c) => c.label === categoriaAtiva)?.type;
 
@@ -40,12 +41,17 @@ export default function CatalogoScreen({ navigation }) {
     : catalog;
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={colors.background}
+      />
 
       <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 16 }]}>
-        <Text style={styles.headerTitle}>Catálogo</Text>
-        <Text style={styles.headerSubtitle}>Explore itens para avaliar e descobrir</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Catálogo</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
+          Explore itens para avaliar e descobrir
+        </Text>
       </View>
 
       <View style={styles.filterWrapper}>
@@ -62,7 +68,10 @@ export default function CatalogoScreen({ navigation }) {
                 key={item.label}
                 style={[
                   styles.chip,
-                  isSelected && styles.chipAtivo,
+                  {
+                    backgroundColor: isSelected ? colors.primary : colors.backgroundSecondary,
+                    borderColor: isSelected ? colors.primary : colors.border,
+                  },
                 ]}
                 onPress={() => setCategoriaAtiva(item.label)}
                 activeOpacity={0.7}
@@ -70,6 +79,7 @@ export default function CatalogoScreen({ navigation }) {
                 <Text
                   style={[
                     styles.chipText,
+                    { color: isSelected ? '#FFFFFF' : colors.textSecondary },
                     isSelected && styles.chipTextAtivo,
                   ]}
                 >
@@ -90,7 +100,13 @@ export default function CatalogoScreen({ navigation }) {
 
           return (
             <TouchableOpacity
-              style={styles.card}
+              style={[
+                styles.card,
+                {
+                  backgroundColor: colors.backgroundSecondary,
+                  borderColor: colors.border,
+                },
+              ]}
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Detalhes', { id: item.id })}
             >
@@ -101,23 +117,23 @@ export default function CatalogoScreen({ navigation }) {
                   resizeMode="cover"
                 />
               ) : (
-                <View style={styles.capa} />
+                <View style={[styles.capa, { backgroundColor: colors.backgroundTertiary }]} />
               )}
               <View style={styles.cardInfo}>
                 <View style={styles.cardMetaRow}>
-                  <Text style={styles.cardCategoria}>
+                  <Text style={[styles.cardCategoria, { color: colors.primary }]}>
                     {TYPE_LABELS[item.type] || item.type}
                   </Text>
-                  <Text style={styles.cardYear}>• {item.year}</Text>
+                  <Text style={[styles.cardYear, { color: colors.textMuted }]}>• {item.year}</Text>
                 </View>
-                <Text style={styles.cardTitulo} numberOfLines={1}>
+                <Text style={[styles.cardTitulo, { color: colors.text }]} numberOfLines={1}>
                   {item.title}
                 </Text>
-                <Text style={styles.cardDescricao} numberOfLines={2}>
+                <Text style={[styles.cardDescricao, { color: colors.textSecondary }]} numberOfLines={2}>
                   {item.description}
                 </Text>
               </View>
-              <Text style={styles.chevron}>›</Text>
+              <Text style={[styles.chevron, { color: colors.textMuted }]}>›</Text>
             </TouchableOpacity>
           );
         }}
@@ -129,7 +145,6 @@ export default function CatalogoScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 22,
@@ -138,12 +153,10 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: '800',
-    color: colors.text,
     letterSpacing: -0.5,
   },
   headerSubtitle: {
     fontSize: 13,
-    color: colors.textSecondary,
     marginTop: 3,
   },
   filterWrapper: {
@@ -161,24 +174,16 @@ const styles = StyleSheet.create({
     height: 36,
     paddingHorizontal: 16,
     borderRadius: 18,
-    backgroundColor: colors.backgroundSecondary,
     borderWidth: 1,
-    borderColor: colors.border,
     marginRight: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipAtivo: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
   chipText: {
-    color: colors.textSecondary,
     fontSize: 13,
     fontWeight: '600',
   },
   chipTextAtivo: {
-    color: colors.text,
     fontWeight: '700',
   },
   lista: {
@@ -188,18 +193,15 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: colors.border,
   },
   capa: {
     width: 60,
     height: 80,
     borderRadius: 10,
-    backgroundColor: colors.backgroundTertiary,
   },
   cardInfo: {
     flex: 1,
@@ -213,31 +215,26 @@ const styles = StyleSheet.create({
   },
   cardCategoria: {
     fontSize: 11,
-    color: colors.primary,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
   cardYear: {
     fontSize: 11,
-    color: colors.textMuted,
     fontWeight: '600',
     marginLeft: 4,
   },
   cardTitulo: {
     fontSize: 16,
-    color: colors.text,
     fontWeight: '700',
     marginBottom: 4,
   },
   cardDescricao: {
     fontSize: 12,
-    color: colors.textSecondary,
     lineHeight: 16,
   },
   chevron: {
     fontSize: 26,
-    color: colors.textMuted,
     marginLeft: 8,
   },
 });
