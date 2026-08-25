@@ -9,6 +9,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getItemById } from '../services/catalogService';
 import { getAverageRating, getRatingsWithUserDetails } from '../utils/ratings';
 import CustomButton from '../components/CustomButton';
@@ -62,6 +63,7 @@ export default function DetalhesScreen({ route, navigation }) {
   const { id } = route?.params || {};
   const [ratingStats, setRatingStats] = useState({ average: 0, total: 0 });
   const [ratingsList, setRatingsList] = useState([]);
+  const insets = useSafeAreaInsets();
 
   const item = useMemo(() => getItemById(id), [id]);
 
@@ -100,7 +102,7 @@ export default function DetalhesScreen({ route, navigation }) {
 
   if (!item) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={[styles.errorContainer, { paddingTop: insets.top > 0 ? insets.top + 20 : 24 }]}>
         <StatusBar barStyle="light-content" backgroundColor={colors.background} />
         <Text style={styles.errorEmoji}>🔍</Text>
         <Text style={styles.errorTitle}>Item não encontrado</Text>
@@ -122,7 +124,7 @@ export default function DetalhesScreen({ route, navigation }) {
       <StatusBar barStyle="light-content" backgroundColor={colors.background} />
 
       {/* Header Superior com Botão de Voltar */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 12 }]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -289,7 +291,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 18,
-    paddingTop: 48,
     paddingBottom: 14,
     backgroundColor: colors.background,
     borderBottomWidth: 1,

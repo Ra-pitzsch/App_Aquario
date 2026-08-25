@@ -9,6 +9,7 @@ import {
   ScrollView,
   StatusBar,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import AuthLink from '../components/AuthLink';
@@ -19,6 +20,7 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const { login } = useAuth();
 
@@ -49,7 +51,10 @@ export default function LoginScreen({ navigation }) {
     >
       <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       <ScrollView
-        contentContainerStyle={styles.scroll}
+        contentContainerStyle={[
+          styles.scroll,
+          { paddingTop: insets.top > 0 ? insets.top + 16 : 24 },
+        ]}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>

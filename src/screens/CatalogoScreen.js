@@ -9,7 +9,7 @@ import {
   StatusBar,
   Image,
 } from 'react-native';
-import { useAuth } from '../context/AuthContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import catalog from '../data/catalog.json';
 import { catalogImages } from '../data/images';
 import colors from '../styles/theme';
@@ -19,7 +19,7 @@ const CATEGORIAS = [
   { label: 'Filmes', type: 'filme' },
   { label: 'Séries', type: 'serie' },
   { label: 'Músicas', type: 'musica' },
-  { label: 'Docs', type: 'documentario' },
+  { label: 'Documentários', type: 'documentario' },
 ];
 
 const TYPE_LABELS = {
@@ -31,7 +31,7 @@ const TYPE_LABELS = {
 
 export default function CatalogoScreen({ navigation }) {
   const [categoriaAtiva, setCategoriaAtiva] = useState('Todos');
-  const { user } = useAuth();
+  const insets = useSafeAreaInsets();
 
   const filtroTipo = CATEGORIAS.find((c) => c.label === categoriaAtiva)?.type;
 
@@ -43,53 +43,43 @@ export default function CatalogoScreen({ navigation }) {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.background} />
 
-      <View style={styles.header}>
-        <View style={styles.headerTopRow}>
-          <TouchableOpacity
-            style={styles.greetingRow}
-            onPress={() => navigation.navigate('Perfil')}
-            activeOpacity={0.7}
-          >
-            <View style={styles.miniAvatar}>
-              <Text style={styles.miniAvatarText}>
-                {user?.name ? user.name.charAt(0).toUpperCase() : '👤'}
-              </Text>
-            </View>
-            <Text style={styles.userGreeting}>
-              Olá, {user?.name || 'Usuário'} 👋
-            </Text>
-          </TouchableOpacity>
-        </View>
+      <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 16 }]}>
         <Text style={styles.headerTitle}>Catálogo</Text>
         <Text style={styles.headerSubtitle}>Explore itens para avaliar e descobrir</Text>
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.chipsRow}
-        style={styles.chipsScroll}
-      >
-        {CATEGORIAS.map((item) => (
-          <TouchableOpacity
-            key={item.label}
-            style={[
-              styles.chip,
-              categoriaAtiva === item.label && styles.chipAtivo,
-            ]}
-            onPress={() => setCategoriaAtiva(item.label)}
-          >
-            <Text
-              style={[
-                styles.chipText,
-                categoriaAtiva === item.label && styles.chipTextAtivo,
-              ]}
-            >
-              {item.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <View style={styles.filterWrapper}>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipsRow}
+          style={styles.chipsScroll}
+        >
+          {CATEGORIAS.map((item) => {
+            const isSelected = categoriaAtiva === item.label;
+            return (
+              <TouchableOpacity
+                key={item.label}
+                style={[
+                  styles.chip,
+                  isSelected && styles.chipAtivo,
+                ]}
+                onPress={() => setCategoriaAtiva(item.label)}
+                activeOpacity={0.7}
+              >
+                <Text
+                  style={[
+                    styles.chipText,
+                    isSelected && styles.chipTextAtivo,
+                  ]}
+                >
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
 
       <FlatList
         data={itensFiltrados}
@@ -143,67 +133,38 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 22,
-    paddingTop: 48,
-    paddingBottom: 12,
-  },
-  headerTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  greetingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  miniAvatar: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: 'rgba(0, 184, 212, 0.2)',
-    borderWidth: 1,
-    borderColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 8,
-  },
-  miniAvatarText: {
-    color: colors.primary,
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  userGreeting: {
-    color: colors.text,
-    fontSize: 14,
-    fontWeight: '600',
+    paddingBottom: 14,
   },
   headerTitle: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '800',
     color: colors.text,
+    letterSpacing: -0.5,
   },
   headerSubtitle: {
     fontSize: 13,
     color: colors.textSecondary,
-    marginTop: 2,
+    marginTop: 3,
+  },
+  filterWrapper: {
+    marginBottom: 14,
   },
   chipsScroll: {
     flexGrow: 0,
-    marginBottom: 14,
   },
   chipsRow: {
-    paddingHorizontal: 18,
+    paddingLeft: 22,
+    paddingRight: 14,
     alignItems: 'center',
   },
   chip: {
-    height: 34,
+    height: 36,
     paddingHorizontal: 16,
-    borderRadius: 20,
+    borderRadius: 18,
     backgroundColor: colors.backgroundSecondary,
     borderWidth: 1,
     borderColor: colors.border,
-    marginHorizontal: 4,
+    marginRight: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -218,6 +179,7 @@ const styles = StyleSheet.create({
   },
   chipTextAtivo: {
     color: colors.text,
+    fontWeight: '700',
   },
   lista: {
     paddingHorizontal: 18,
