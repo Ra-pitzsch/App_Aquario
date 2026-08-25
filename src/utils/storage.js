@@ -113,3 +113,82 @@ export async function getUserById(userId) {
   return users.find((u) => String(u.id) === String(userId)) || null;
 }
 
+/**
+ * Atualiza os dados cadastrais de um usuário (nome, e-mail, senha).
+ * @param {Object} params
+ * @param {string|number} params.userId
+ * @param {string} [params.name]
+ * @param {string} [params.email]
+ * @param {string} [params.currentPassword]
+ * @param {string} [params.newPassword]
+ * @returns {Promise<Object>} usuário atualizado
+ */
+export async function updateUserProfile({
+  userId,
+  name,
+  email,
+  currentPassword,
+  newPassword,
+}) {
+  if (!userId) {
+    throw new Error('ID do usuário é obrigatório.');
+  }
+
+  const usersJson = await AsyncStorage.getItem(USERS_KEY);
+  const users = usersJson ? JSON.parse(usersJson) : [];
+
+  const userIndex = users.findIndex((u) => String(u.id) === String(userId));
+  if (userIndex === -1) {
+    throw new Error('Usuário não encontrado.');
+  }
+
+  const user = users[userIndex];
+
+  // Atualização de Nome
+  if (name !== undefined) {
+    const cleanName = name.trim();
+    if (!cleanName) {
+      throw new Error('O nome não pode ficar em branco.');
+    }
+    user.name = cleanName;
+  }
+
+  // Atualização de E-mail
+  if (email !== undefined) {
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail) {
+      throw new Error('O e-mail não pode ficar em branco.');
+    }
+
+    const emailInUse = users.some(
+      (u) => String(u.id) !== String(userId) && u.email.toLowerCase() === cleanEmail
+    );
+    if (emailInUse) {
+      throw new Error('Este e-mail já está sendo utilizado por outra conta.');
+    }
+
+    user.email = cleanEmail;
+  }
+
+  // Atualização de Senha
+  if (newPassword !== undefined && newPassword !== '') {
+    if (!currentPassword) {
+      throw new Error('Informe a senha atual para alterar a senha.');
+    }
+    if (user.password !== currentPassword) {
+      throw new Error('A senha atual informada está incorreta.');
+    }
+    if (newPassword.length < 4) {
+      throw new Error('A nova senha deve ter no mínimo 4 caracteres.');
+    }
+    user.password = newPassword;
+  }
+
+  user.updatedAt = new Date().toISOString();
+  users[userIndex] = user;
+
+  await AsyncStorage.setItem(USERS_KEY, JSON.stringify(users));
+
+  return user;
+}
+

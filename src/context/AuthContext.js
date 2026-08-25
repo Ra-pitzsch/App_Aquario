@@ -4,6 +4,7 @@ import {
   loginUser,
   getCurrentUser,
   logoutUser,
+  updateUserProfile,
 } from '../utils/storage';
 
 export const AuthContext = createContext({});
@@ -57,6 +58,25 @@ export function AuthProvider({ children }) {
   };
 
   /**
+   * Atualiza os dados de cadastro do usuário.
+   */
+  const updateUser = async (params) => {
+    try {
+      const updated = await updateUserProfile({
+        userId: user?.id,
+        ...params,
+      });
+      setUser(updated);
+      return { success: true, user: updated };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || 'Erro ao atualizar dados do usuário.',
+      };
+    }
+  };
+
+  /**
    * Encerra a sessão do usuário.
    */
   const logout = async () => {
@@ -72,9 +92,11 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         loading,
         login,
         register,
+        updateUser,
         logout,
       }}
     >

@@ -13,9 +13,11 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { getRatingsByUser } from '../utils/ratings';
+import { getProfileExtras } from '../utils/profile';
 import { getItemById } from '../services/catalogService';
-import colors from '../styles/theme';
+import { catalogImages } from '../data/images';
 
 const TYPE_LABELS = {
   filme: 'Filme',
@@ -40,23 +42,33 @@ function formatReviewDate(dateString) {
 
 export default function PerfilScreen({ navigation }) {
   const { user, logout } = useAuth();
+  const { colors, isDark } = useTheme();
   const [userRatings, setUserRatings] = useState([]);
+  const [profileExtras, setProfileExtras] = useState({
+    photoUri: null,
+    favoriteItemId: null,
+    favoriteType: null,
+  });
   const [loading, setLoading] = useState(true);
   const insets = useSafeAreaInsets();
 
-  // Recarrega as avaliações do usuário sempre que a tela ganha foco
+  // Recarrega as avaliações e dados extras do usuário sempre que a tela ganha foco
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
 
-      async function loadUserRatings() {
+      async function loadUserData() {
         if (!user?.id) {
           setLoading(false);
           return;
         }
 
         try {
-          const rawRatings = await getRatingsByUser({ userId: user.id });
+          const [rawRatings, extras] = await Promise.all([
+            getRatingsByUser({ userId: user.id }),
+            getProfileExtras({ userId: user.id }),
+          ]);
+
           const enriched = rawRatings
             .map((rating) => {
               const item = getItemById(rating.itemId);
@@ -75,9 +87,10 @@ export default function PerfilScreen({ navigation }) {
 
           if (isActive) {
             setUserRatings(enriched);
+            setProfileExtras(extras);
           }
         } catch (error) {
-          console.error('Erro ao carregar avaliações do usuário:', error);
+          console.error('Erro ao carregar dados do usuário:', error);
         } finally {
           if (isActive) {
             setLoading(false);
@@ -85,7 +98,7 @@ export default function PerfilScreen({ navigation }) {
         }
       }
 
-      loadUserRatings();
+      loadUserData();
 
       return () => {
         isActive = false;
@@ -111,15 +124,46 @@ export default function PerfilScreen({ navigation }) {
   };
 
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : 'U';
+  const favoriteItem = profileExtras.favoriteItemId
+    ? getItemById(profileExtras.favoriteItemId)
+    : null;
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={colors.background}
+      />
 
-      {/* Header Limpo e Consistente */}
-      <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 16 }]}>
-        <Text style={styles.headerTitle}>Meu Perfil</Text>
-        <Text style={styles.headerSubtitle}>Gerencie suas informações e avaliações</Text>
+      {/* Header com Título e Botão de Configurações */}
+      <View
+        style={[
+          styles.header,
+          {
+            paddingTop: insets.top > 0 ? insets.top + 8 : 16,
+          },
+        ]}
+      >
+        <View style={styles.headerTitles}>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>Meu Perfil</Text>
+          <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
+            Gerencie suas informações e preferências
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          style={[
+            styles.settingsHeaderButton,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.border,
+            },
+          ]}
+          onPress={() => navigation.navigate('Configuracoes')}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.settingsHeaderIcon}>⚙️</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -127,30 +171,191 @@ export default function PerfilScreen({ navigation }) {
         showsVerticalScrollIndicator={false}
       >
         {/* Card do Usuário Logado */}
-        <View style={styles.profileCard}>
-          <View style={styles.avatarLarge}>
-            <Text style={styles.avatarLargeText}>{userInitial}</Text>
-          </View>
-          <Text style={styles.userName}>{user?.name || 'Usuário'}</Text>
-          <Text style={styles.userEmail}>{user?.email || 'Sem e-mail'}</Text>
+        <View
+          style={[
+            styles.profileCard,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.border,
+            },
+          ]}
+        >
+          {profileExtras.photoUri ? (
+            <Image
+              source={{ uri: profileExtras.photoUri }}
+              style={[
+                styles.avatarLargeImage,
+                {
+                  borderColor: colors.primary,
+                },
+              ]}
+            />
+          ) : (
+            <View
+              style={[
+                styles.avatarLarge,
+                {
+                  borderColor: colors.primary,
+                },
+              ]}
+            >
+              <Text style={[styles.avatarLargeText, { color: colors.primary }]}>
+                {userInitial}
+              </Text>
+            </View>
+          )}
 
-          <View style={styles.statsContainer}>
+          <Text style={[styles.userName, { color: colors.text }]}>
+            {user?.name || 'Usuário'}
+          </Text>
+          <Text style={[styles.userEmail, { color: colors.textSecondary }]}>
+            {user?.email || 'Sem e-mail'}
+          </Text>
+
+          {/* Estatística de Avaliações */}
+          <View style={[styles.statsContainer, { borderTopColor: colors.border }]}>
             <View style={styles.statBox}>
-              <Text style={styles.statNumber}>{userRatings.length}</Text>
-              <Text style={styles.statLabel}>
+              <Text style={[styles.statNumber, { color: colors.primary }]}>
+                {userRatings.length}
+              </Text>
+              <Text style={[styles.statLabel, { color: colors.textMuted }]}>
                 {userRatings.length === 1 ? 'Avaliação Feita' : 'Avaliações Feitas'}
               </Text>
             </View>
           </View>
         </View>
 
+        {/* Card de Preferências do Usuário (Foto, Favorito, Tipo) */}
+        {(profileExtras.favoriteType || favoriteItem) && (
+          <View
+            style={[
+              styles.preferencesCard,
+              {
+                backgroundColor: colors.backgroundSecondary,
+                borderColor: colors.border,
+              },
+            ]}
+          >
+            <View style={styles.preferencesHeader}>
+              <Text style={[styles.preferencesTitle, { color: colors.text }]}>
+                ⭐ Favoritos
+              </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Configuracoes')}
+                activeOpacity={0.7}
+              >
+                <Text style={[styles.editPreferencesText, { color: colors.primary }]}>
+                  Editar
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Tipo de Mídia Favorito */}
+            {profileExtras.favoriteType && (
+              <View style={styles.favTypeRow}>
+                <Text style={[styles.favTypeLabel, { color: colors.textSecondary }]}>
+                  Gênero predileto:
+                </Text>
+                <View
+                  style={[
+                    styles.favTypeBadge,
+                    {
+                      backgroundColor: 'rgba(0, 184, 212, 0.15)',
+                      borderColor: 'rgba(0, 184, 212, 0.3)',
+                    },
+                  ]}
+                >
+                  <Text style={[styles.favTypeBadgeText, { color: colors.primary }]}>
+                    {TYPE_LABELS[profileExtras.favoriteType] || profileExtras.favoriteType}
+                  </Text>
+                </View>
+              </View>
+            )}
+
+            {/* Mídia Favorita */}
+            {favoriteItem && (
+              <TouchableOpacity
+                style={[
+                  styles.favItemBox,
+                  {
+                    backgroundColor: colors.backgroundTertiary,
+                    borderColor: colors.border,
+                  },
+                ]}
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('Detalhes', { id: favoriteItem.id })}
+              >
+                {catalogImages[favoriteItem.id] ? (
+                  <Image
+                    source={catalogImages[favoriteItem.id]}
+                    style={styles.favItemCover}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View
+                    style={[
+                      styles.favItemCover,
+                      { backgroundColor: colors.backgroundSecondary },
+                    ]}
+                  />
+                )}
+                <View style={styles.favItemInfo}>
+                  <Text style={[styles.favItemTag, { color: colors.primary }]}>
+                    Mídia Favorita
+                  </Text>
+                  <Text
+                    style={[styles.favItemTitle, { color: colors.text }]}
+                    numberOfLines={1}
+                  >
+                    {favoriteItem.title}
+                  </Text>
+                  <Text style={[styles.favItemMeta, { color: colors.textMuted }]}>
+                    {favoriteItem.year} • {TYPE_LABELS[favoriteItem.type] || favoriteItem.type}
+                  </Text>
+                </View>
+                <Text style={[styles.chevron, { color: colors.textMuted }]}>›</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+
+        {/* Atalho para Configurações */}
+        <TouchableOpacity
+          style={[
+            styles.settingsShortcut,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.border,
+            },
+          ]}
+          onPress={() => navigation.navigate('Configuracoes')}
+          activeOpacity={0.7}
+        >
+          <View style={styles.settingsShortcutLeft}>
+            <Text style={styles.settingsShortcutIcon}>⚙️</Text>
+            <View>
+              <Text style={[styles.settingsShortcutTitle, { color: colors.text }]}>
+                Configurações da Conta
+              </Text>
+              <Text style={[styles.settingsShortcutSubtitle, { color: colors.textSecondary }]}>
+                Editar foto, tema, favoritos, dados e senha
+              </Text>
+            </View>
+          </View>
+          <Text style={[styles.chevron, { color: colors.textMuted }]}>›</Text>
+        </TouchableOpacity>
+
         {/* Seção de Avaliações do Usuário */}
         <View style={styles.ratingsSection}>
           <View style={styles.ratingsHeaderRow}>
-            <Text style={styles.sectionTitle}>Minhas Avaliações</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              Minhas Avaliações
+            </Text>
             {userRatings.length > 0 && (
               <View style={styles.countBadge}>
-                <Text style={styles.countBadgeText}>{userRatings.length}</Text>
+                <Text style={[styles.countBadgeText, { color: colors.primary }]}>
+                  {userRatings.length}
+                </Text>
               </View>
             )}
           </View>
@@ -158,21 +363,41 @@ export default function PerfilScreen({ navigation }) {
           {loading ? (
             <View style={styles.loadingBox}>
               <ActivityIndicator size="small" color={colors.primary} />
-              <Text style={styles.loadingText}>Carregando avaliações...</Text>
+              <Text style={[styles.loadingText, { color: colors.textMuted }]}>
+                Carregando avaliações...
+              </Text>
             </View>
           ) : userRatings.length === 0 ? (
-            <View style={styles.emptyBox}>
+            <View
+              style={[
+                styles.emptyBox,
+                {
+                  backgroundColor: colors.backgroundSecondary,
+                  borderColor: colors.border,
+                },
+              ]}
+            >
               <Text style={styles.emptyEmoji}>📝</Text>
-              <Text style={styles.emptyTitle}>Você ainda não avaliou nada</Text>
-              <Text style={styles.emptySubtitle}>
+              <Text style={[styles.emptyTitle, { color: colors.text }]}>
+                Você ainda não avaliou nada
+              </Text>
+              <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
                 Navegue pelo catálogo e avalie filmes, séries, músicas e documentários para vê-los aqui!
               </Text>
               <TouchableOpacity
-                style={styles.exploreButton}
+                style={[
+                  styles.exploreButton,
+                  {
+                    backgroundColor: colors.backgroundTertiary,
+                    borderColor: colors.borderLight,
+                  },
+                ]}
                 onPress={() => navigation.navigate('Catálogo')}
                 activeOpacity={0.8}
               >
-                <Text style={styles.exploreButtonText}>Explorar Catálogo</Text>
+                <Text style={[styles.exploreButtonText, { color: colors.text }]}>
+                  Explorar Catálogo
+                </Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -186,7 +411,13 @@ export default function PerfilScreen({ navigation }) {
                 return (
                   <TouchableOpacity
                     key={review.itemId}
-                    style={styles.ratingCard}
+                    style={[
+                      styles.ratingCard,
+                      {
+                        backgroundColor: colors.backgroundSecondary,
+                        borderColor: colors.border,
+                      },
+                    ]}
                     activeOpacity={0.7}
                     onPress={() =>
                       navigation.navigate('Detalhes', { id: review.itemId })
@@ -196,11 +427,19 @@ export default function PerfilScreen({ navigation }) {
                       {item.image ? (
                         <Image
                           source={item.image}
-                          style={styles.itemCover}
+                          style={[
+                            styles.itemCover,
+                            { backgroundColor: colors.backgroundTertiary },
+                          ]}
                           resizeMode="cover"
                         />
                       ) : (
-                        <View style={styles.itemPlaceholder}>
+                        <View
+                          style={[
+                            styles.itemPlaceholder,
+                            { backgroundColor: colors.backgroundTertiary },
+                          ]}
+                        >
                           <Text style={styles.itemPlaceholderEmoji}>🎬</Text>
                         </View>
                       )}
@@ -209,17 +448,19 @@ export default function PerfilScreen({ navigation }) {
                         <View style={styles.itemMetaRow}>
                           {item.type ? (
                             <View style={styles.typeBadge}>
-                              <Text style={styles.typeBadgeText}>
+                              <Text style={[styles.typeBadgeText, { color: colors.primary }]}>
                                 {TYPE_LABELS[item.type] || item.type}
                               </Text>
                             </View>
                           ) : null}
                           {item.year ? (
-                            <Text style={styles.itemYear}>• {item.year}</Text>
+                            <Text style={[styles.itemYear, { color: colors.textMuted }]}>
+                              • {item.year}
+                            </Text>
                           ) : null}
                         </View>
 
-                        <Text style={styles.itemTitle} numberOfLines={1}>
+                        <Text style={[styles.itemTitle, { color: colors.text }]} numberOfLines={1}>
                           {item.title}
                         </Text>
 
@@ -230,31 +471,34 @@ export default function PerfilScreen({ navigation }) {
                               key={s}
                               style={[
                                 styles.starIcon,
-                                s <= review.rating
-                                  ? styles.starFilled
-                                  : styles.starEmpty,
+                                {
+                                  color:
+                                    s <= review.rating
+                                      ? colors.star
+                                      : colors.starInactive,
+                                },
                               ]}
                             >
                               ★
                             </Text>
                           ))}
-                          <Text style={styles.ratingScore}>
+                          <Text style={[styles.ratingScore, { color: colors.text }]}>
                             {review.rating}/5
                           </Text>
                           {review.date ? (
-                            <Text style={styles.reviewDate}>
+                            <Text style={[styles.reviewDate, { color: colors.textMuted }]}>
                               • {formatReviewDate(review.date)}
                             </Text>
                           ) : null}
                         </View>
                       </View>
-                      <Text style={styles.chevron}>›</Text>
+                      <Text style={[styles.chevron, { color: colors.textMuted }]}>›</Text>
                     </View>
 
                     {/* Comentário (se houver) */}
                     {hasComment && (
-                      <View style={styles.commentBox}>
-                        <Text style={styles.commentText}>
+                      <View style={[styles.commentBox, { borderTopColor: colors.border }]}>
+                        <Text style={[styles.commentText, { color: colors.textSecondary }]}>
                           "{review.comment.trim()}"
                         </Text>
                       </View>
@@ -269,11 +513,19 @@ export default function PerfilScreen({ navigation }) {
         {/* Botão de Logout no final da tela */}
         <View style={styles.logoutContainer}>
           <TouchableOpacity
-            style={styles.logoutButton}
+            style={[
+              styles.logoutButton,
+              {
+                backgroundColor: colors.backgroundSecondary,
+                borderColor: 'rgba(255, 77, 77, 0.35)',
+              },
+            ]}
             onPress={handleLogout}
             activeOpacity={0.8}
           >
-            <Text style={styles.logoutButtonText}>Sair da Conta</Text>
+            <Text style={[styles.logoutButtonText, { color: colors.danger }]}>
+              Sair da Conta
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -284,22 +536,37 @@ export default function PerfilScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 22,
     paddingBottom: 14,
+  },
+  headerTitles: {
+    flex: 1,
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: '800',
-    color: colors.text,
     letterSpacing: -0.5,
   },
   headerSubtitle: {
     fontSize: 13,
-    color: colors.textSecondary,
     marginTop: 3,
+  },
+  settingsHeaderButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    marginLeft: 12,
+  },
+  settingsHeaderIcon: {
+    fontSize: 20,
   },
   scrollContent: {
     paddingHorizontal: 18,
@@ -307,39 +574,40 @@ const styles = StyleSheet.create({
     paddingBottom: 36,
   },
   profileCard: {
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 20,
     padding: 22,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.border,
-    marginBottom: 24,
+    marginBottom: 16,
   },
   avatarLarge: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 76,
+    height: 76,
+    borderRadius: 38,
     backgroundColor: 'rgba(0, 184, 212, 0.2)',
     borderWidth: 2,
-    borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
   },
+  avatarLargeImage: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    borderWidth: 2,
+    marginBottom: 12,
+  },
   avatarLargeText: {
-    color: colors.primary,
     fontSize: 32,
     fontWeight: '800',
   },
   userName: {
     fontSize: 20,
     fontWeight: '800',
-    color: colors.text,
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 14,
-    color: colors.textSecondary,
     fontWeight: '500',
     marginBottom: 16,
   },
@@ -348,7 +616,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: 14,
     borderTopWidth: 1,
-    borderTopColor: colors.border,
     justifyContent: 'center',
   },
   statBox: {
@@ -357,15 +624,109 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 22,
     fontWeight: '800',
-    color: colors.primary,
   },
   statLabel: {
     fontSize: 12,
-    color: colors.textMuted,
     fontWeight: '600',
     marginTop: 2,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
+  },
+  preferencesCard: {
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    marginBottom: 14,
+  },
+  preferencesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  preferencesTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+  },
+  editPreferencesText: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  favTypeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  favTypeLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+    marginRight: 8,
+  },
+  favTypeBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  favTypeBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+  },
+  favItemBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 12,
+    padding: 8,
+    borderWidth: 1,
+  },
+  favItemCover: {
+    width: 40,
+    height: 52,
+    borderRadius: 6,
+  },
+  favItemInfo: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  favItemTag: {
+    fontSize: 10,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  favItemTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  favItemMeta: {
+    fontSize: 11,
+  },
+  settingsShortcut: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+    marginBottom: 20,
+  },
+  settingsShortcutLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  settingsShortcutIcon: {
+    fontSize: 22,
+    marginRight: 12,
+  },
+  settingsShortcutTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 2,
+  },
+  settingsShortcutSubtitle: {
+    fontSize: 12,
   },
   ratingsSection: {
     marginBottom: 24,
@@ -378,7 +739,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: colors.text,
     letterSpacing: 0.3,
   },
   countBadge: {
@@ -391,7 +751,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   countBadgeText: {
-    color: colors.primary,
     fontSize: 12,
     fontWeight: '700',
   },
@@ -401,15 +760,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingText: {
-    color: colors.textMuted,
     marginTop: 10,
     fontSize: 14,
   },
   emptyBox: {
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
@@ -419,13 +775,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   emptyTitle: {
-    color: colors.text,
     fontSize: 16,
     fontWeight: '700',
     marginBottom: 6,
   },
   emptySubtitle: {
-    color: colors.textSecondary,
     fontSize: 13,
     textAlign: 'center',
     lineHeight: 18,
@@ -434,13 +788,10 @@ const styles = StyleSheet.create({
   exploreButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: colors.backgroundTertiary,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: colors.borderLight,
   },
   exploreButtonText: {
-    color: colors.text,
     fontSize: 13,
     fontWeight: '700',
   },
@@ -448,10 +799,8 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   ratingCard: {
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
     padding: 14,
     marginBottom: 12,
   },
@@ -463,13 +812,11 @@ const styles = StyleSheet.create({
     width: 50,
     height: 68,
     borderRadius: 8,
-    backgroundColor: colors.backgroundTertiary,
   },
   itemPlaceholder: {
     width: 50,
     height: 68,
     borderRadius: 8,
-    backgroundColor: colors.backgroundTertiary,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -494,20 +841,17 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   typeBadgeText: {
-    color: colors.primary,
     fontSize: 9,
     fontWeight: '700',
     textTransform: 'uppercase',
   },
   itemYear: {
     fontSize: 11,
-    color: colors.textMuted,
     fontWeight: '600',
   },
   itemTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: colors.text,
     marginBottom: 4,
   },
   starsRow: {
@@ -518,36 +862,25 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginRight: 1,
   },
-  starFilled: {
-    color: colors.star,
-  },
-  starEmpty: {
-    color: colors.starInactive,
-  },
   ratingScore: {
-    color: colors.text,
     fontWeight: '700',
     fontSize: 12,
     marginLeft: 4,
   },
   reviewDate: {
-    color: colors.textMuted,
     fontSize: 11,
     marginLeft: 4,
   },
   chevron: {
     fontSize: 24,
-    color: colors.textMuted,
     marginLeft: 6,
   },
   commentBox: {
     marginTop: 10,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: colors.border,
   },
   commentText: {
-    color: colors.textSecondary,
     fontSize: 13,
     fontStyle: 'italic',
     lineHeight: 18,
@@ -556,17 +889,15 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   logoutButton: {
-    backgroundColor: colors.backgroundSecondary,
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 77, 77, 0.35)',
   },
   logoutButtonText: {
-    color: colors.danger,
     fontWeight: '700',
     fontSize: 15,
   },
 });
+
