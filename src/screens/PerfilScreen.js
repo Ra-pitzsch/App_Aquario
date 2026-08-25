@@ -14,6 +14,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { getRatingsByUser } from '../utils/ratings';
 import { getItemById } from '../services/catalogService';
+import colors from '../styles/theme';
 
 const TYPE_LABELS = {
   filme: 'Filme',
@@ -54,7 +55,6 @@ export default function PerfilScreen({ navigation }) {
 
         try {
           const rawRatings = await getRatingsByUser({ userId: user.id });
-          // Enriquece cada avaliação com as informações do item do catálogo
           const enriched = rawRatings
             .map((rating) => {
               const item = getItemById(rating.itemId);
@@ -69,7 +69,6 @@ export default function PerfilScreen({ navigation }) {
                 },
               };
             })
-            // Ordena as avaliações mais recentes primeiro
             .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
           if (isActive) {
@@ -113,7 +112,7 @@ export default function PerfilScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#141218" />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
 
       {/* Header */}
       <View style={styles.header}>
@@ -163,7 +162,7 @@ export default function PerfilScreen({ navigation }) {
 
           {loading ? (
             <View style={styles.loadingBox}>
-              <ActivityIndicator size="small" color="#E63950" />
+              <ActivityIndicator size="small" color={colors.primary} />
               <Text style={styles.loadingText}>Carregando avaliações...</Text>
             </View>
           ) : userRatings.length === 0 ? (
@@ -290,7 +289,7 @@ export default function PerfilScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -299,21 +298,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 48,
     paddingBottom: 14,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E1B24',
+    borderBottomColor: colors.border,
   },
   backButton: {
     paddingVertical: 6,
     paddingHorizontal: 8,
   },
   backButtonText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 16,
     fontWeight: '700',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 17,
     fontWeight: '700',
   },
@@ -325,39 +324,39 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   profileCard: {
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 20,
     padding: 22,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
     marginBottom: 24,
   },
   avatarLarge: {
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: 'rgba(230, 57, 80, 0.2)',
+    backgroundColor: 'rgba(0, 184, 212, 0.2)',
     borderWidth: 2,
-    borderColor: '#E63950',
+    borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
   },
   avatarLargeText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 32,
     fontWeight: '800',
   },
   userName: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: colors.text,
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 14,
-    color: '#8A8794',
+    color: colors.textSecondary,
     fontWeight: '500',
     marginBottom: 16,
   },
@@ -366,7 +365,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: 14,
     borderTopWidth: 1,
-    borderTopColor: '#2A2733',
+    borderTopColor: colors.border,
     justifyContent: 'center',
   },
   statBox: {
@@ -375,11 +374,11 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#E63950',
+    color: colors.primary,
   },
   statLabel: {
     fontSize: 12,
-    color: '#8A8794',
+    color: colors.textMuted,
     fontWeight: '600',
     marginTop: 2,
     textTransform: 'uppercase',
@@ -396,20 +395,20 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: colors.text,
     letterSpacing: 0.3,
   },
   countBadge: {
-    backgroundColor: 'rgba(230, 57, 80, 0.15)',
+    backgroundColor: 'rgba(0, 184, 212, 0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(230, 57, 80, 0.3)',
+    borderColor: 'rgba(0, 184, 212, 0.3)',
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 2,
     marginLeft: 8,
   },
   countBadgeText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 12,
     fontWeight: '700',
   },
@@ -419,15 +418,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingText: {
-    color: '#8A8794',
+    color: colors.textMuted,
     marginTop: 10,
     fontSize: 14,
   },
   emptyBox: {
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
@@ -437,13 +436,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   emptyTitle: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 16,
     fontWeight: '700',
     marginBottom: 6,
   },
   emptySubtitle: {
-    color: '#8A8794',
+    color: colors.textSecondary,
     fontSize: 13,
     textAlign: 'center',
     lineHeight: 18,
@@ -452,13 +451,13 @@ const styles = StyleSheet.create({
   exploreButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: '#2A2733',
+    backgroundColor: colors.backgroundTertiary,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#34313D',
+    borderColor: colors.borderLight,
   },
   exploreButtonText: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 13,
     fontWeight: '700',
   },
@@ -466,10 +465,10 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   ratingCard: {
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
     padding: 14,
     marginBottom: 12,
   },
@@ -481,13 +480,13 @@ const styles = StyleSheet.create({
     width: 50,
     height: 68,
     borderRadius: 8,
-    backgroundColor: '#2A2733',
+    backgroundColor: colors.backgroundTertiary,
   },
   itemPlaceholder: {
     width: 50,
     height: 68,
     borderRadius: 8,
-    backgroundColor: '#2A2733',
+    backgroundColor: colors.backgroundTertiary,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -505,27 +504,27 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   typeBadge: {
-    backgroundColor: 'rgba(230, 57, 80, 0.15)',
+    backgroundColor: 'rgba(0, 184, 212, 0.15)',
     paddingVertical: 2,
     paddingHorizontal: 6,
     borderRadius: 4,
     marginRight: 4,
   },
   typeBadgeText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 9,
     fontWeight: '700',
     textTransform: 'uppercase',
   },
   itemYear: {
     fontSize: 11,
-    color: '#8A8794',
+    color: colors.textMuted,
     fontWeight: '600',
   },
   itemTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: colors.text,
     marginBottom: 4,
   },
   starsRow: {
@@ -537,35 +536,35 @@ const styles = StyleSheet.create({
     marginRight: 1,
   },
   starFilled: {
-    color: '#F5B400',
+    color: colors.star,
   },
   starEmpty: {
-    color: '#34313D',
+    color: colors.starInactive,
   },
   ratingScore: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontWeight: '700',
     fontSize: 12,
     marginLeft: 4,
   },
   reviewDate: {
-    color: '#8A8794',
+    color: colors.textMuted,
     fontSize: 11,
     marginLeft: 4,
   },
   chevron: {
     fontSize: 24,
-    color: '#4C4956',
+    color: colors.textMuted,
     marginLeft: 6,
   },
   commentBox: {
     marginTop: 10,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: '#2A2733',
+    borderTopColor: colors.border,
   },
   commentText: {
-    color: '#C7C4D0',
+    color: colors.textSecondary,
     fontSize: 13,
     fontStyle: 'italic',
     lineHeight: 18,
@@ -574,16 +573,16 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   logoutButton: {
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(230, 57, 80, 0.4)',
+    borderColor: 'rgba(255, 77, 77, 0.35)',
   },
   logoutButtonText: {
-    color: '#E63950',
+    color: colors.danger,
     fontWeight: '700',
     fontSize: 15,
   },

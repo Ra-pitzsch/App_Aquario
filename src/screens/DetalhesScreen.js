@@ -12,6 +12,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { getItemById } from '../services/catalogService';
 import { getAverageRating, getRatingsWithUserDetails } from '../utils/ratings';
 import CustomButton from '../components/CustomButton';
+import colors from '../styles/theme';
 
 const TYPE_LABELS = {
   filme: 'Filme',
@@ -62,10 +63,8 @@ export default function DetalhesScreen({ route, navigation }) {
   const [ratingStats, setRatingStats] = useState({ average: 0, total: 0 });
   const [ratingsList, setRatingsList] = useState([]);
 
-  // Busca isolada do item via service
   const item = useMemo(() => getItemById(id), [id]);
 
-  // Recarrega as avaliações e a lista sempre que a tela entra em foco
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
@@ -102,7 +101,7 @@ export default function DetalhesScreen({ route, navigation }) {
   if (!item) {
     return (
       <View style={styles.errorContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#141218" />
+        <StatusBar barStyle="light-content" backgroundColor={colors.background} />
         <Text style={styles.errorEmoji}>🔍</Text>
         <Text style={styles.errorTitle}>Item não encontrado</Text>
         <Text style={styles.errorSubtitle}>
@@ -120,7 +119,7 @@ export default function DetalhesScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#141218" />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
 
       {/* Header Superior com Botão de Voltar */}
       <View style={styles.header}>
@@ -283,7 +282,7 @@ export default function DetalhesScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -292,21 +291,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 48,
     paddingBottom: 14,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E1B24',
+    borderBottomColor: colors.border,
   },
   backButton: {
     paddingVertical: 6,
     paddingHorizontal: 8,
   },
   backButtonText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 16,
     fontWeight: '700',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 17,
     fontWeight: '700',
   },
@@ -320,8 +319,8 @@ const styles = StyleSheet.create({
   coverWrapper: {
     alignItems: 'center',
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.5,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.25,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 8 },
     elevation: 8,
@@ -330,15 +329,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 280,
     borderRadius: 18,
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
   },
   coverPlaceholder: {
     width: '100%',
     height: 280,
     borderRadius: 18,
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -346,11 +345,11 @@ const styles = StyleSheet.create({
     fontSize: 54,
   },
   infoCard: {
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 20,
     padding: 22,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
   },
   badgeRow: {
     flexDirection: 'row',
@@ -358,30 +357,30 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   typeBadge: {
-    backgroundColor: 'rgba(230, 57, 80, 0.15)',
+    backgroundColor: 'rgba(0, 184, 212, 0.15)',
     paddingVertical: 4,
     paddingHorizontal: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(230, 57, 80, 0.3)',
+    borderColor: 'rgba(0, 184, 212, 0.3)',
     marginRight: 10,
   },
   typeBadgeText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 11,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   yearText: {
-    color: '#8A8794',
+    color: colors.textMuted,
     fontSize: 13,
     fontWeight: '600',
   },
   title: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: colors.text,
     marginBottom: 14,
     letterSpacing: 0.3,
   },
@@ -395,35 +394,35 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   star: {
-    color: '#F5B400',
+    color: colors.star,
     fontSize: 16,
     marginRight: 2,
   },
   notaValue: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontWeight: '700',
     fontSize: 15,
     marginLeft: 4,
   },
   notaLabel: {
-    color: '#8A8794',
+    color: colors.textMuted,
     fontSize: 13,
     marginLeft: 4,
   },
   divider: {
     height: 1,
-    backgroundColor: '#2A2733',
+    backgroundColor: colors.border,
     marginVertical: 16,
   },
   sectionTitle: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 8,
     letterSpacing: 0.3,
   },
   description: {
-    color: '#C7C4D0',
+    color: colors.textSecondary,
     fontSize: 14,
     lineHeight: 22,
     marginBottom: 20,
@@ -433,7 +432,7 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     flex: 1,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
@@ -443,13 +442,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   errorTitle: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 8,
   },
   errorSubtitle: {
-    color: '#8A8794',
+    color: colors.textSecondary,
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 24,
@@ -457,13 +456,13 @@ const styles = StyleSheet.create({
   backLink: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
   },
   backLinkText: {
-    color: '#E63950',
+    color: colors.primary,
     fontWeight: '700',
     fontSize: 14,
   },
@@ -476,30 +475,30 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   reviewsSectionTitle: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 18,
     fontWeight: '800',
     letterSpacing: 0.3,
   },
   reviewsCountBadge: {
-    backgroundColor: 'rgba(230, 57, 80, 0.15)',
+    backgroundColor: 'rgba(0, 184, 212, 0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(230, 57, 80, 0.3)',
+    borderColor: 'rgba(0, 184, 212, 0.3)',
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 2,
     marginLeft: 8,
   },
   reviewsCountBadgeText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 12,
     fontWeight: '700',
   },
   emptyReviewsBox: {
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
@@ -509,13 +508,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   emptyReviewsTitle: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 4,
   },
   emptyReviewsSubtitle: {
-    color: '#8A8794',
+    color: colors.textSecondary,
     fontSize: 13,
     textAlign: 'center',
   },
@@ -523,10 +522,10 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   reviewCard: {
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
     padding: 16,
     marginBottom: 12,
   },
@@ -547,25 +546,25 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(230, 57, 80, 0.2)',
+    backgroundColor: 'rgba(0, 184, 212, 0.2)',
     borderWidth: 1,
-    borderColor: 'rgba(230, 57, 80, 0.35)',
+    borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
   avatarText: {
-    color: '#E63950',
+    color: colors.primary,
     fontSize: 15,
     fontWeight: '700',
   },
   reviewUserName: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 14,
     fontWeight: '700',
   },
   reviewDate: {
-    color: '#8A8794',
+    color: colors.textMuted,
     fontSize: 11,
     fontWeight: '500',
     marginTop: 2,
@@ -579,21 +578,20 @@ const styles = StyleSheet.create({
     marginLeft: 1,
   },
   reviewStarFilled: {
-    color: '#F5B400',
+    color: colors.star,
   },
   reviewStarEmpty: {
-    color: '#34313D',
+    color: colors.starInactive,
   },
   commentBox: {
     marginTop: 12,
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: '#2A2733',
+    borderTopColor: colors.border,
   },
   commentText: {
-    color: '#C7C4D0',
+    color: colors.textSecondary,
     fontSize: 13,
     lineHeight: 20,
   },
 });
-

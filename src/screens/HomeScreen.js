@@ -12,15 +12,16 @@ import {
 } from 'react-native';
 import catalog from '../data/catalog.json';
 import { catalogImages } from '../data/images';
+import colors from '../styles/theme';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Ícones/badges por tipo de mídia
 const TYPE_CONFIG = {
-  filme: { label: 'Filme', emoji: '🎬', color: '#E63950' },
-  serie: { label: 'Série', emoji: '📺', color: '#FF7B00' },
-  musica: { label: 'Música', emoji: '🎵', color: '#9D4EDD' },
-  documentario: { label: 'Doc', emoji: '🏔️', color: '#00B4D8' },
+  filme: { label: 'Filme', emoji: '🎬', color: colors.primary },
+  serie: { label: 'Série', emoji: '📺', color: '#38BDF8' },
+  musica: { label: 'Música', emoji: '🎵', color: colors.accent },
+  documentario: { label: 'Doc', emoji: '🏔️', color: '#2DD4BF' },
 };
 
 // Posições orgânicas espalhadas pelo "aquário"
@@ -104,7 +105,6 @@ function FloatingItem({ item, position, index, navigation }) {
   const floatX = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Parâmetros de timing e distância assíncronos para movimento natural
     const durationY = 2600 + (index % 4) * 450;
     const durationX = 3200 + (index % 3) * 550;
     const distanceY = 10 + (index % 3) * 3;
@@ -173,7 +173,7 @@ function FloatingItem({ item, position, index, navigation }) {
   const typeInfo = TYPE_CONFIG[item.type] || {
     label: item.type,
     emoji: '🎬',
-    color: '#E63950',
+    color: colors.primary,
   };
 
   const isLarge = position.size === 'large';
@@ -214,14 +214,12 @@ function FloatingItem({ item, position, index, navigation }) {
           </View>
         )}
 
-        {/* Gradiente escuro sobre a imagem para leitura do título */}
         <View style={styles.overlayGradient} />
 
-        {/* Badge do Tipo */}
         <View
           style={[
             styles.typeBadge,
-            { backgroundColor: 'rgba(10, 18, 30, 0.85)', borderColor: typeInfo.color },
+            { backgroundColor: colors.backgroundSecondary, borderColor: typeInfo.color },
           ]}
         >
           <Text style={styles.typeEmoji}>{typeInfo.emoji}</Text>
@@ -230,7 +228,6 @@ function FloatingItem({ item, position, index, navigation }) {
           </Text>
         </View>
 
-        {/* Título e Ano na base */}
         <View style={styles.itemBottomInfo}>
           <Text style={styles.itemTitle} numberOfLines={1}>
             {item.title}
@@ -243,12 +240,11 @@ function FloatingItem({ item, position, index, navigation }) {
 }
 
 export default function HomeScreen({ navigation }) {
-  // Limita os itens a exibir para garantir leveza e estética limpa
   const itemsToDisplay = catalog.slice(0, 8);
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#0B132B" />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
 
       {/* Bolhas sutis de ambiente */}
       <AmbientBubble startX={SCREEN_WIDTH * 0.15} size={14} duration={7000} delay={0} />
@@ -256,7 +252,6 @@ export default function HomeScreen({ navigation }) {
       <AmbientBubble startX={SCREEN_WIDTH * 0.75} size={18} duration={6500} delay={3000} />
       <AmbientBubble startX={SCREEN_WIDTH * 0.88} size={10} duration={9000} delay={800} />
 
-      {/* Header Superior do Aquário */}
       <View style={styles.header}>
         <View style={styles.headerBadge}>
           <Text style={styles.headerBadgeText}>🐠 RECOMENDAÇÕES VIVAS</Text>
@@ -267,7 +262,6 @@ export default function HomeScreen({ navigation }) {
         </Text>
       </View>
 
-      {/* Espaço do Aquário com itens flutuando */}
       <View style={styles.aquariumArea}>
         {itemsToDisplay.map((item, index) => {
           const position = POSITIONS[index % POSITIONS.length];
@@ -289,7 +283,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B132B', // Fundo azul profundo de aquário
+    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 22,
@@ -299,16 +293,16 @@ const styles = StyleSheet.create({
   },
   headerBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(0, 180, 216, 0.15)',
+    backgroundColor: 'rgba(0, 184, 212, 0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(0, 180, 216, 0.4)',
+    borderColor: 'rgba(0, 184, 212, 0.4)',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
     marginBottom: 6,
   },
   headerBadgeText: {
-    color: '#00B4D8',
+    color: colors.primary,
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 0.8,
@@ -316,12 +310,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: colors.text,
     letterSpacing: -0.5,
   },
   headerSubtitle: {
     fontSize: 13,
-    color: '#8E9AAF',
+    color: colors.textSecondary,
     marginTop: 2,
   },
   aquariumArea: {
@@ -336,10 +330,10 @@ const styles = StyleSheet.create({
   itemCard: {
     borderRadius: 18,
     overflow: 'hidden',
-    backgroundColor: '#111D38',
+    backgroundColor: colors.backgroundSecondary,
     borderWidth: 1.5,
-    borderColor: 'rgba(0, 180, 216, 0.3)',
-    shadowColor: '#00B4D8',
+    borderColor: colors.borderLight,
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
@@ -353,7 +347,7 @@ const styles = StyleSheet.create({
   imagePlaceholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#1C2541',
+    backgroundColor: colors.backgroundTertiary,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -362,7 +356,7 @@ const styles = StyleSheet.create({
   },
   overlayGradient: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(11, 19, 43, 0.45)',
+    backgroundColor: 'rgba(7, 26, 43, 0.45)',
   },
   typeBadge: {
     position: 'absolute',
@@ -390,24 +384,24 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: 10,
-    backgroundColor: 'rgba(11, 19, 43, 0.88)',
+    backgroundColor: 'rgba(7, 26, 43, 0.92)',
   },
   itemTitle: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: colors.text,
   },
   itemYear: {
     fontSize: 10,
-    color: '#8E9AAF',
+    color: colors.textSecondary,
     marginTop: 1,
     fontWeight: '600',
   },
   bubble: {
     position: 'absolute',
-    backgroundColor: 'rgba(144, 224, 239, 0.6)',
+    backgroundColor: 'rgba(77, 208, 225, 0.5)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
     zIndex: 1,
   },
 });

@@ -13,6 +13,7 @@ import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import AuthLink from '../components/AuthLink';
 import { useAuth } from '../context/AuthContext';
+import colors from '../styles/theme';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -34,8 +35,6 @@ export default function LoginScreen({ navigation }) {
       if (!result.success) {
         Alert.alert('Erro ao entrar', result.message);
       }
-      // Se tiver sucesso, o estado global do AuthContext (user) é atualizado
-      // e o RootNavigator alternará automaticamente para a tela logada.
     } catch (error) {
       Alert.alert('Erro', 'Ocorreu um erro inesperado ao fazer login.');
     } finally {
@@ -48,14 +47,14 @@ export default function LoginScreen({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <StatusBar barStyle="light-content" backgroundColor="#141218" />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
           <View style={styles.logoCircle}>
-            <Text style={styles.logoEmoji}>🎬</Text>
+            <Text style={styles.logoEmoji}>🐠</Text>
           </View>
           <Text style={styles.appName}>Aquário</Text>
           <Text style={styles.subtitle}>
@@ -100,7 +99,7 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
   },
   scroll: {
     flexGrow: 1,
@@ -115,12 +114,12 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: '#E63950',
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 14,
-    shadowColor: '#E63950',
-    shadowOpacity: 0.3,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.4,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 5,
@@ -131,33 +130,33 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: colors.text,
     letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 13,
-    color: '#A9A6B2',
+    color: colors.textSecondary,
     marginTop: 6,
     textAlign: 'center',
     paddingHorizontal: 20,
   },
   card: {
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 20,
     padding: 22,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
   },
   cardTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: colors.text,
     marginBottom: 18,
   },
   label: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#C7C4D0',
+    color: colors.textSecondary,
     marginBottom: 6,
     textTransform: 'uppercase',
     letterSpacing: 0.4,

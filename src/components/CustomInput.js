@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextInput, StyleSheet } from 'react-native';
+import colors from '../styles/theme';
 
 export default function CustomInput({
   placeholder,
@@ -15,7 +16,7 @@ export default function CustomInput({
     <TextInput
       style={[styles.input, multiline && styles.multilineInput, style]}
       placeholder={placeholder}
-      placeholderTextColor="#8A8794"
+      placeholderTextColor={colors.textMuted}
       value={value}
       onChangeText={onChangeText}
       secureTextEntry={secureTextEntry}
@@ -30,14 +31,14 @@ export default function CustomInput({
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#141218',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
-    color: '#FFFFFF',
+    color: colors.text,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
     marginBottom: 16,
     width: '100%',
   },
@@ -46,4 +47,3 @@ const styles = StyleSheet.create({
     paddingTop: 14,
   },
 });
-

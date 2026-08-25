@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import colors from '../styles/theme';
 
 export default function AuthLink({ text, onPress }) {
   return (
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   text: {
-    color: '#E63950',
+    color: colors.accent,
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',

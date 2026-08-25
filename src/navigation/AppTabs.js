@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import colors from '../styles/theme';
 
 import HomeScreen from '../screens/HomeScreen';
 import CatalogoScreen from '../screens/CatalogoScreen';
@@ -15,8 +16,8 @@ export default function AppTabs() {
       initialRouteName="Home"
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#E63950',
-        tabBarInactiveTintColor: '#8E8A9A',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabBarLabel,
         tabBarIcon: ({ focused, color, size }) => {
@@ -61,8 +62,8 @@ export default function AppTabs() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: '#1E1B24',
-    borderTopColor: '#2E2A38',
+    backgroundColor: colors.backgroundSecondary,
+    borderTopColor: colors.border,
     borderTopWidth: 1,
     height: 60,
     paddingBottom: 8,

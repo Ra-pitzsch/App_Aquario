@@ -13,6 +13,7 @@ import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import AuthLink from '../components/AuthLink';
 import { useAuth } from '../context/AuthContext';
+import colors from '../styles/theme';
 
 export default function CadastroScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -24,13 +25,11 @@ export default function CadastroScreen({ navigation }) {
   const { register, login } = useAuth();
 
   const handleRegister = async () => {
-    // 1. Validação de campos vazios
     if (!name.trim() || !email.trim() || !password || !confirmPassword) {
       Alert.alert('Atenção', 'Por favor, preencha todos os campos.');
       return;
     }
 
-    // 2. Validação de confirmação de senha
     if (password !== confirmPassword) {
       Alert.alert('Atenção', 'As senhas não coincidem.');
       return;
@@ -38,7 +37,6 @@ export default function CadastroScreen({ navigation }) {
 
     try {
       setIsSubmitting(true);
-      // 3. Registro do usuário no Context
       const regResult = await register(name, email, password);
 
       if (!regResult.success) {
@@ -46,7 +44,6 @@ export default function CadastroScreen({ navigation }) {
         return;
       }
 
-      // 4. Loga automaticamente em seguida
       const loginResult = await login(email, password);
       if (!loginResult.success) {
         Alert.alert(
@@ -67,14 +64,14 @@ export default function CadastroScreen({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <StatusBar barStyle="light-content" backgroundColor="#141218" />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
           <View style={styles.logoCircle}>
-            <Text style={styles.logoEmoji}>🎬</Text>
+            <Text style={styles.logoEmoji}>🐠</Text>
           </View>
           <Text style={styles.appName}>Aquário</Text>
           <Text style={styles.subtitle}>
@@ -134,7 +131,7 @@ export default function CadastroScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#141218',
+    backgroundColor: colors.background,
   },
   scroll: {
     flexGrow: 1,
@@ -149,12 +146,12 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#E63950',
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
-    shadowColor: '#E63950',
-    shadowOpacity: 0.3,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.4,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 5,
@@ -165,33 +162,33 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: colors.text,
     letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 13,
-    color: '#A9A6B2',
+    color: colors.textSecondary,
     marginTop: 4,
     textAlign: 'center',
     paddingHorizontal: 16,
   },
   card: {
-    backgroundColor: '#1E1B24',
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 20,
     padding: 22,
     borderWidth: 1,
-    borderColor: '#2A2733',
+    borderColor: colors.border,
   },
   cardTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: colors.text,
     marginBottom: 18,
   },
   label: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#C7C4D0',
+    color: colors.textSecondary,
     marginBottom: 6,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
