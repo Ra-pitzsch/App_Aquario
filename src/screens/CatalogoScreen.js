@@ -96,7 +96,9 @@ export default function CatalogoScreen({ navigation }) {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.lista}
         renderItem={({ item }) => {
-          const imageSource = catalogImages[item.id];
+          const imageSource = item.imageUrl
+            ? { uri: item.imageUrl }
+            : (catalogImages[item.id] || null);
 
           return (
             <TouchableOpacity
@@ -121,15 +123,25 @@ export default function CatalogoScreen({ navigation }) {
               )}
               <View style={styles.cardInfo}>
                 <View style={styles.cardMetaRow}>
-                  <Text style={[styles.cardCategoria, { color: colors.primary }]}>
-                    {TYPE_LABELS[item.type] || item.type}
-                  </Text>
+                  <View style={styles.cardBadge}>
+                    <Text style={[styles.cardCategoria, { color: colors.primary }]}>
+                      {TYPE_LABELS[item.type] || item.type}
+                    </Text>
+                  </View>
                   <Text style={[styles.cardYear, { color: colors.textMuted }]}>• {item.year}</Text>
                 </View>
-                <Text style={[styles.cardTitulo, { color: colors.text }]} numberOfLines={1}>
+                <Text
+                  style={[styles.cardTitulo, { color: colors.text }]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
                   {item.title}
                 </Text>
-                <Text style={[styles.cardDescricao, { color: colors.textSecondary }]} numberOfLines={2}>
+                <Text
+                  style={[styles.cardDescricao, { color: colors.textSecondary }]}
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
                   {item.description}
                 </Text>
               </View>
@@ -211,10 +223,17 @@ const styles = StyleSheet.create({
   cardMetaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 2,
+    marginBottom: 4,
+  },
+  cardBadge: {
+    backgroundColor: 'rgba(0, 184, 212, 0.15)',
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    borderRadius: 6,
+    marginRight: 6,
   },
   cardCategoria: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.4,
@@ -222,19 +241,18 @@ const styles = StyleSheet.create({
   cardYear: {
     fontSize: 11,
     fontWeight: '600',
-    marginLeft: 4,
   },
   cardTitulo: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   cardDescricao: {
     fontSize: 12,
     lineHeight: 16,
   },
   chevron: {
-    fontSize: 26,
-    marginLeft: 8,
+    fontSize: 24,
+    marginLeft: 6,
   },
 });

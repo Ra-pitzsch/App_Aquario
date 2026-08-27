@@ -275,9 +275,10 @@ export default function DetalhesScreen({ route, navigation }) {
           ) : (
             <View style={styles.reviewsList}>
               {ratingsList.map((review, index) => {
-                const hasComment =
-                  typeof review.comment === 'string' &&
-                  review.comment.trim().length > 0;
+                const rawComment =
+                  typeof review.comment === 'string' ? review.comment.trim() : '';
+                const cleanComment = rawComment.replace(/^["'“”«»]+|["'“”«»]+$/g, '').trim();
+                const hasComment = cleanComment.length > 0;
 
                 return (
                   <View
@@ -342,7 +343,7 @@ export default function DetalhesScreen({ route, navigation }) {
                     {hasComment && (
                       <View style={[styles.commentBox, { borderTopColor: colors.border }]}>
                         <Text style={[styles.commentText, { color: colors.textSecondary }]}>
-                          {review.comment.trim()}
+                          {`"${cleanComment}"`}
                         </Text>
                       </View>
                     )}

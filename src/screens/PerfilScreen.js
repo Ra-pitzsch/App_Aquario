@@ -251,9 +251,10 @@ export default function PerfilScreen({ navigation }) {
             <View style={styles.ratingsList}>
               {userRatings.map((review) => {
                 const item = review.item;
-                const hasComment =
-                  typeof review.comment === 'string' &&
-                  review.comment.trim().length > 0;
+                const rawComment =
+                  typeof review.comment === 'string' ? review.comment.trim() : '';
+                const cleanComment = rawComment.replace(/^["'“”«»]+|["'“”«»]+$/g, '').trim();
+                const hasComment = cleanComment.length > 0;
 
                 return (
                   <TouchableOpacity
@@ -307,7 +308,11 @@ export default function PerfilScreen({ navigation }) {
                           ) : null}
                         </View>
 
-                        <Text style={[styles.itemTitle, { color: colors.text }]} numberOfLines={1}>
+                        <Text
+                          style={[styles.itemTitle, { color: colors.text }]}
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                        >
                           {item.title}
                         </Text>
 
@@ -342,11 +347,11 @@ export default function PerfilScreen({ navigation }) {
                       <Text style={[styles.chevron, { color: colors.textMuted }]}>›</Text>
                     </View>
 
-                    {/* Comentário (se houver) */}
+                    {/* Comentário formatado com aspas apenas no JSX */}
                     {hasComment && (
                       <View style={[styles.commentBox, { borderTopColor: colors.border }]}>
                         <Text style={[styles.commentText, { color: colors.textSecondary }]}>
-                          "{review.comment.trim()}"
+                          {`"${cleanComment}"`}
                         </Text>
                       </View>
                     )}

@@ -14,9 +14,13 @@ export function getItemById(id) {
     return null;
   }
 
+  const imageSource = item.imageUrl
+    ? { uri: item.imageUrl }
+    : (catalogImages[item.id] || null);
+
   return {
     ...item,
-    image: catalogImages[item.id] || null,
+    image: imageSource,
   };
 }
 
@@ -28,6 +32,8 @@ export function getItemById(id) {
 export function getAllItems() {
   return catalog.map((item) => ({
     ...item,
-    image: catalogImages[item.id] || null,
+    image: item.imageUrl
+      ? { uri: item.imageUrl }
+      : (catalogImages[item.id] || null),
   }));
 }

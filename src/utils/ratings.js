@@ -26,7 +26,8 @@ export async function saveRating({ userId, itemId, rating, comment = '' }) {
 
   const strUserId = String(userId);
   const strItemId = String(itemId);
-  const cleanComment = typeof comment === 'string' ? comment.trim() : '';
+  let cleanComment = typeof comment === 'string' ? comment.trim() : '';
+  cleanComment = cleanComment.replace(/^["'“”«»]+|["'“”«»]+$/g, '').trim();
 
   const ratingsJson = await AsyncStorage.getItem(RATINGS_KEY);
   const ratings = ratingsJson ? JSON.parse(ratingsJson) : [];

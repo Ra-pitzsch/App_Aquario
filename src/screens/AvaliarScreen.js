@@ -222,7 +222,11 @@ export default function AvaliarScreen({ route, navigation }) {
                 {TYPE_LABELS[item.type] || item.type}
               </Text>
             </View>
-            <Text style={[styles.itemTitle, { color: colors.text }]} numberOfLines={2}>
+            <Text
+              style={[styles.itemTitle, { color: colors.text }]}
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
               {item.title}
             </Text>
             <Text style={[styles.itemYear, { color: colors.textMuted }]}>{item.year}</Text>

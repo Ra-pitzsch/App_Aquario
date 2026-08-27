@@ -170,7 +170,10 @@ function FloatingItem({ item, position, index, navigation }) {
     };
   }, []);
 
-  const imageSource = catalogImages[item.id];
+  const imageSource = item.imageUrl
+    ? { uri: item.imageUrl }
+    : (catalogImages[item.id] || null);
+
   const typeInfo = typeConfig[item.type] || {
     label: item.type,
     color: colors.primary,
@@ -201,7 +204,7 @@ function FloatingItem({ item, position, index, navigation }) {
             width: cardWidth,
             height: cardHeight,
             backgroundColor: colors.backgroundSecondary,
-            borderColor: colors.borderLight,
+            borderColor: colors.border,
             shadowColor: colors.primary,
           },
         ]}
@@ -241,10 +244,20 @@ function FloatingItem({ item, position, index, navigation }) {
             { backgroundColor: colors.backgroundSecondary + 'EA' },
           ]}
         >
-          <Text style={[styles.itemTitle, { color: colors.text }]} numberOfLines={1}>
+          <Text
+            style={[styles.itemTitle, { color: colors.text }]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {item.title}
           </Text>
-          <Text style={[styles.itemYear, { color: colors.textSecondary }]}>{item.year}</Text>
+          <Text
+            style={[styles.itemYear, { color: colors.textSecondary }]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {item.year}
+          </Text>
         </View>
       </TouchableOpacity>
     </Animated.View>
@@ -322,13 +335,13 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   itemCard: {
-    borderRadius: 18,
+    borderRadius: 16,
     overflow: 'hidden',
-    borderWidth: 1.5,
-    shadowOffset: { width: 0, height: 6 },
+    borderWidth: 1,
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
-    shadowRadius: 10,
-    elevation: 8,
+    shadowRadius: 8,
+    elevation: 6,
   },
   itemImage: {
     width: '100%',
@@ -343,7 +356,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   placeholderText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
     textTransform: 'uppercase',
   },
@@ -359,12 +372,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 7,
     paddingVertical: 3,
-    borderRadius: 8,
+    borderRadius: 6,
     borderWidth: 1,
   },
   typeText: {
-    fontSize: 9,
-    fontWeight: '800',
+    fontSize: 10,
+    fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
@@ -376,12 +389,12 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   itemTitle: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
   },
   itemYear: {
-    fontSize: 10,
-    marginTop: 1,
+    fontSize: 11,
+    marginTop: 2,
     fontWeight: '600',
   },
   bubble: {
