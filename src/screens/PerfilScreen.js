@@ -180,7 +180,7 @@ export default function PerfilScreen({ navigation }) {
         >
           <View style={styles.themeInfo}>
             <Text style={[styles.themeTitle, { color: colors.text }]}>
-              {isDark ? '🌙 Modo Escuro' : '☀️ Modo Claro'}
+              {isDark ? 'Tema Escuro' : 'Tema Claro'}
             </Text>
             <Text style={[styles.themeSubtitle, { color: colors.textSecondary }]}>
               {isDark ? 'Tema atual: Escuro' : 'Tema atual: Claro'}
