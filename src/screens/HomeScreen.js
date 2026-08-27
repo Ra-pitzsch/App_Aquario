@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from 'react-native';
 import catalog from '../data/catalog.json';
-import { catalogImages } from '../data/images';
+import { fishImages } from '../data/fishImages';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../context/ThemeContext';
 
@@ -19,14 +19,14 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Posições orgânicas espalhadas pelo "aquário"
 const POSITIONS = [
-  { top: '3%', left: '6%', size: 'large' },
-  { top: '8%', right: '8%', size: 'medium' },
-  { top: '33%', left: '8%', size: 'medium' },
-  { top: '36%', right: '6%', size: 'large' },
-  { top: '63%', left: '10%', size: 'large' },
-  { top: '65%', right: '10%', size: 'medium' },
-  { top: '22%', left: '38%', size: 'small' },
-  { top: '50%', left: '36%', size: 'small' },
+  { top: '4%', left: '8%' },
+  { top: '9%', right: '8%' },
+  { top: '27%', left: '8%' },
+  { top: '30%', right: '8%' },
+  { top: '54%', left: '8%' },
+  { top: '58%', right: '10%' },
+  { top: '17%', left: '38%' },
+  { top: '42%', left: '36%' },
 ];
 
 /**
@@ -91,25 +91,18 @@ function AmbientBubble({ startX, size, duration, delay }) {
 }
 
 /**
- * Card flutuante individual do item no aquário
+ * Peixe flutuante individual representando um item no aquário
  */
 function FloatingItem({ item, position, index, navigation }) {
   const floatY = useRef(new Animated.Value(0)).current;
   const floatX = useRef(new Animated.Value(0)).current;
   const { colors } = useTheme();
 
-  const typeConfig = {
-    filme: { label: 'Filme', color: colors.primary },
-    serie: { label: 'Série', color: '#38BDF8' },
-    musica: { label: 'Música', color: colors.accent },
-    documentario: { label: 'Doc', color: '#2DD4BF' },
-  };
-
   useEffect(() => {
     const durationY = 2600 + (index % 4) * 450;
     const durationX = 3200 + (index % 3) * 550;
     const distanceY = 10 + (index % 3) * 3;
-    const distanceX = 5 + (index % 2) * 3;
+    const distanceX = 6 + (index % 2) * 4;
     const initialDelay = (index * 200) % 900;
 
     const animY = Animated.loop(
@@ -170,21 +163,6 @@ function FloatingItem({ item, position, index, navigation }) {
     };
   }, []);
 
-  const imageSource = item.imageUrl
-    ? { uri: item.imageUrl }
-    : (catalogImages[item.id] || null);
-
-  const typeInfo = typeConfig[item.type] || {
-    label: item.type,
-    color: colors.primary,
-  };
-
-  const isLarge = position.size === 'large';
-  const isSmall = position.size === 'small';
-
-  const cardWidth = isLarge ? 140 : isSmall ? 105 : 125;
-  const cardHeight = isLarge ? 180 : isSmall ? 135 : 160;
-
   return (
     <Animated.View
       style={[
@@ -198,65 +176,43 @@ function FloatingItem({ item, position, index, navigation }) {
       ]}
     >
       <TouchableOpacity
-        style={[
-          styles.itemCard,
-          {
-            width: cardWidth,
-            height: cardHeight,
-            backgroundColor: colors.backgroundSecondary,
-            borderColor: colors.border,
-            shadowColor: colors.primary,
-          },
-        ]}
-        activeOpacity={0.85}
+        style={styles.touchableArea}
+        activeOpacity={0.8}
         onPress={() => navigation.navigate('Detalhes', { id: item.id })}
       >
-        {imageSource ? (
-          <Image
-            source={imageSource}
-            style={styles.itemImage}
-            resizeMode="cover"
-          />
-        ) : (
-          <View style={[styles.imagePlaceholder, { backgroundColor: colors.backgroundTertiary }]}>
-            <Text style={[styles.placeholderText, { color: colors.textSecondary }]}>
-              {typeInfo.label}
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.overlayGradient} />
-
+        {/* Bolha com o peixe ilustrado */}
         <View
           style={[
-            styles.typeBadge,
-            { backgroundColor: colors.backgroundSecondary, borderColor: typeInfo.color },
+            styles.fishCard,
+            {
+              borderColor: colors.primary,
+              shadowColor: colors.primary,
+            },
           ]}
         >
-          <Text style={[styles.typeText, { color: typeInfo.color }]}>
-            {typeInfo.label}
-          </Text>
+          <Image
+            source={item.fishImage}
+            style={styles.fishImage}
+            resizeMode="contain"
+          />
         </View>
 
+        {/* Título do item abaixo do peixe */}
         <View
           style={[
-            styles.itemBottomInfo,
-            { backgroundColor: colors.backgroundSecondary + 'EA' },
+            styles.titleBadge,
+            {
+              backgroundColor: 'rgba(7, 26, 43, 0.88)',
+              borderColor: 'rgba(0, 184, 212, 0.45)',
+            },
           ]}
         >
           <Text
-            style={[styles.itemTitle, { color: colors.text }]}
+            style={[styles.itemTitle, { color: '#FFFFFF' }]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {item.title}
-          </Text>
-          <Text
-            style={[styles.itemYear, { color: colors.textSecondary }]}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {item.year}
           </Text>
         </View>
       </TouchableOpacity>
@@ -265,9 +221,21 @@ function FloatingItem({ item, position, index, navigation }) {
 }
 
 export default function HomeScreen({ navigation }) {
-  const itemsToDisplay = catalog.slice(0, 8);
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
+
+  // Sorteia uma imagem de peixe para cada item do catálogo exibido
+  const itemsToDisplay = useMemo(() => {
+    const subset = catalog.slice(0, 8);
+    return subset.map((item, index) => {
+      const randomIndex = Math.floor(Math.random() * fishImages.length);
+      const fishImage = fishImages[randomIndex] || fishImages[index % fishImages.length];
+      return {
+        ...item,
+        fishImage,
+      };
+    });
+  }, []);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.homeBackground }]}>
@@ -285,7 +253,7 @@ export default function HomeScreen({ navigation }) {
       <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 16 }]}>
         <Text style={[styles.headerTitle, { color: '#FFFFFF' }]}>Aquário</Text>
         <Text style={[styles.headerSubtitle, { color: '#8EAEC4' }]}>
-          Toque em uma mídia para ver detalhes e avaliar
+          Toque em um peixe para ver detalhes e avaliar
         </Text>
       </View>
 
@@ -334,68 +302,42 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 5,
   },
-  itemCard: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    borderWidth: 1,
+  touchableArea: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fishCard: {
+    width: 95,
+    height: 72,
+    borderRadius: 18,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 4,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.35,
     shadowRadius: 8,
     elevation: 6,
   },
-  itemImage: {
+  fishImage: {
     width: '100%',
     height: '100%',
-    position: 'absolute',
   },
-  imagePlaceholder: {
-    width: '100%',
-    height: '100%',
+  titleBadge: {
+    marginTop: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    borderWidth: 1,
+    maxWidth: 115,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 8,
-  },
-  placeholderText: {
-    fontSize: 11,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-  },
-  overlayGradient: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(7, 26, 43, 0.25)',
-  },
-  typeBadge: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: 6,
-    borderWidth: 1,
-  },
-  typeText: {
-    fontSize: 10,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
-  },
-  itemBottomInfo: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 10,
   },
   itemTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  itemYear: {
     fontSize: 11,
-    marginTop: 2,
-    fontWeight: '600',
+    fontWeight: '700',
+    textAlign: 'center',
   },
   bubble: {
     position: 'absolute',
@@ -405,3 +347,4 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
 });
+
