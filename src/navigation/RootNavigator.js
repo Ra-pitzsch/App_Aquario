@@ -26,6 +26,7 @@ export default function RootNavigator() {
 
   return (
     <Stack.Navigator
+      detachInactiveScreens={false}
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.background },

@@ -29,7 +29,7 @@ export default function App() {
     <SafeAreaProvider>
       <ThemeProvider>
         <AuthProvider>
-          <NavigationContainer>
+          <NavigationContainer detachInactiveScreens={false}>
             <RootNavigator />
           </NavigationContainer>
         </AuthProvider>
