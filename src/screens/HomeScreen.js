@@ -224,9 +224,10 @@ export default function HomeScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
 
-  // Sorteia uma imagem de peixe para cada item do catálogo exibido
+  // Sorteia 8 itens do catálogo e atribui uma imagem de peixe para cada um
   const itemsToDisplay = useMemo(() => {
-    const subset = catalog.slice(0, 8);
+    const shuffled = [...catalog].sort(() => 0.5 - Math.random());
+    const subset = shuffled.slice(0, 8);
     return subset.map((item, index) => {
       const randomIndex = Math.floor(Math.random() * fishImages.length);
       const fishImage = fishImages[randomIndex] || fishImages[index % fishImages.length];

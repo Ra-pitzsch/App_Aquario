@@ -46,5 +46,277 @@
     "year": 2016,
     "imageUrl": "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg",
     "description": "Amigos enfrentam mistérios sobrenaturais e conspirações governamentais nos anos 80 após o sumiço de um garoto."
+  },
+  {
+    "id": "7",
+    "title": "Interestelar",
+    "type": "filme",
+    "year": 2014,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    "description": "Um grupo de astronautas viaja através de um buraco de minhoca em busca de um novo lar para a humanidade."
+  },
+  {
+    "id": "8",
+    "title": "A Viagem de Chihiro",
+    "type": "filme",
+    "year": 2001,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
+    "description": "Uma jovem garota entra no mundo dos espíritos e precisa trabalhar em uma casa de banhos mística para salvar seus pais."
+  },
+  {
+    "id": "9",
+    "title": "Parasita",
+    "type": "filme",
+    "year": 2019,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
+    "description": "Uma família com dificuldades financeiras infiltra-se gradualmente na rotina de uma família abastada com consequências inesperadas."
+  },
+  {
+    "id": "10",
+    "title": "Matrix",
+    "type": "filme",
+    "year": 1999,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+    "description": "Um programador descobre que a realidade em que vive é uma simulação criada por máquinas inteligentes."
+  },
+  {
+    "id": "11",
+    "title": "O Poderoso Chefão",
+    "type": "filme",
+    "year": 1972,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+    "description": "O patriarca de uma dinastia do crime organizado transfere o controle de seu império clandestino para seu filho relutante."
+  },
+  {
+    "id": "12",
+    "title": "O Senhor dos Anéis: O Retorno do Rei",
+    "type": "filme",
+    "year": 2003,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
+    "description": "O confronto final entre as forças do bem e do mal pelo controle do destino da Terra-média."
+  },
+  {
+    "id": "13",
+    "title": "Batman: O Cavaleiro das Trevas",
+    "type": "filme",
+    "year": 2008,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    "description": "Batman enfrenta o Coringa, um gênio psicopata que quer instaurar a anarquia em Gotham City."
+  },
+  {
+    "id": "14",
+    "title": "Spider-Man: Através do Aranhaverso",
+    "type": "filme",
+    "year": 2023,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
+    "description": "Miles Morales é catapultado através do Multiverso onde encontra uma equipe de Pessoas-Aranha encarregadas de proteger sua existência."
+  },
+  {
+    "id": "15",
+    "title": "The Last of Us",
+    "type": "serie",
+    "year": 2023,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/uKvVjHNqB5VmOrdxqAt2V7JMrne.jpg",
+    "description": "Em um mundo pós-apocalíptico devastado por uma infecção fúngica, um contrabandista é contratado para escoltar uma garota imune."
+  },
+  {
+    "id": "16",
+    "title": "Succession",
+    "type": "serie",
+    "year": 2018,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/7HW473jhj90BEaw3cbJIRSpW2EU.jpg",
+    "description": "A disputa implacável pelo controle de um império global de mídia e entretenimento entre os membros da família Roy."
+  },
+  {
+    "id": "17",
+    "title": "Game of Thrones",
+    "type": "serie",
+    "year": 2011,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg",
+    "description": "Famílias nobres travam uma guerra sangrenta pelo Trono de Ferro enquanto uma ameaça ancestral surge no norte."
+  },
+  {
+    "id": "18",
+    "title": "Dark",
+    "type": "serie",
+    "year": 2017,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/apbrbWs8M9lyOpJYU5WXrpFbk1Z.jpg",
+    "description": "O desaparecimento de duas crianças em uma cidade alemã expõe segredos e conexões temporais entre quatro famílias."
+  },
+  {
+    "id": "19",
+    "title": "Peaky Blinders",
+    "type": "serie",
+    "year": 2013,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/vUUqzWa2LnHIVqkaKVlVGkVcZIW.jpg",
+    "description": "Uma notória gangue criminosa de Birmingham ascende no poder sob a liderança do ambicioso Thomas Shelby."
+  },
+  {
+    "id": "20",
+    "title": "Ruptura (Severance)",
+    "type": "serie",
+    "year": 2022,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/A31q9kM01s7c1V26XyXvR8r2Y5O.jpg",
+    "description": "Trabalhadores passam por um procedimento cirúrgico que divide suas memórias entre a vida profissional e pessoal."
+  },
+  {
+    "id": "21",
+    "title": "The Bear",
+    "type": "serie",
+    "year": 2022,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/sHFlw1qWzpRwhgR35g8L5lC3qG4.jpg",
+    "description": "Um jovem chef de alta gastronomia retorna a Chicago para administrar a lanchonete falida de sua família."
+  },
+  {
+    "id": "22",
+    "title": "Chernobyl",
+    "type": "serie",
+    "year": 2019,
+    "imageUrl": "https://image.tmdb.org/t/p/w500/hlLXt2tOPT6RRnjiUmoxyG1LTFi.jpg",
+    "description": "A história dos homens e mulheres que sacrificaram suas vidas para conter o pior desastre nuclear da história humana."
+  },
+  {
+    "id": "23",
+    "title": "Bohemian Rhapsody",
+    "type": "musica",
+    "year": 1975,
+    "imageUrl": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80",
+    "description": "Obra-prima do rock progressivo e ópera rock da banda britânica Queen, marco eterno da história da música."
+  },
+  {
+    "id": "24",
+    "title": "Random Access Memories",
+    "type": "musica",
+    "year": 2013,
+    "imageUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop&q=80",
+    "description": "Aclamado álbum de música eletrônica e funk do duo francês Daft Punk, vencedor de múltiplos Grammys."
+  },
+  {
+    "id": "25",
+    "title": "Thriller",
+    "type": "musica",
+    "year": 1982,
+    "imageUrl": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=600&auto=format&fit=crop&q=80",
+    "description": "O álbum mais vendido de todos os tempos, revolucionou o pop com sucessos inesquecíveis de Michael Jackson."
+  },
+  {
+    "id": "26",
+    "title": "The Dark Side of the Moon",
+    "type": "musica",
+    "year": 1973,
+    "imageUrl": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&auto=format&fit=crop&q=80",
+    "description": "Álbum conceitual histórico do Pink Floyd explorando a passagem do tempo, conflito e a condição humana."
+  },
+  {
+    "id": "27",
+    "title": "As Quatro Estações",
+    "type": "musica",
+    "year": 1725,
+    "imageUrl": "https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=600&auto=format&fit=crop&q=80",
+    "description": "Conjunto de quatro concertos para violino do compositor barroco Antonio Vivaldi celebrando a natureza."
+  },
+  {
+    "id": "28",
+    "title": "Kind of Blue",
+    "type": "musica",
+    "year": 1959,
+    "imageUrl": "https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&auto=format&fit=crop&q=80",
+    "description": "Obra seminal do jazz moderno liderada pelo trompetista Miles Davis com lendários arranjos modais."
+  },
+  {
+    "id": "29",
+    "title": "Abbey Road",
+    "type": "musica",
+    "year": 1969,
+    "imageUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&auto=format&fit=crop&q=80",
+    "description": "Icônico álbum dos The Beatles que marcou o ápice criativo e a união definitiva do quarteto de Liverpool."
+  },
+  {
+    "id": "30",
+    "title": "Nevermind",
+    "type": "musica",
+    "year": 1991,
+    "imageUrl": "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=600&auto=format&fit=crop&q=80",
+    "description": "Álbum revolucionário do Nirvana que catapultou o movimento grunge e o rock alternativo para o cenário mundial."
+  },
+  {
+    "id": "31",
+    "title": "Clube da Esquina",
+    "type": "musica",
+    "year": 1972,
+    "imageUrl": "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=600&auto=format&fit=crop&q=80",
+    "description": "Marco histórico da MPB criado por Milton Nascimento e Lô Borges, unindo jazz, rock, bossa nova e folk."
+  },
+  {
+    "id": "32",
+    "title": "Nosso Planeta (Our Planet)",
+    "type": "documentario",
+    "year": 2019,
+    "imageUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80",
+    "description": "Série documental espetacular narrada por David Attenborough sobre a beleza natural e o impacto ambiental na Terra."
+  },
+  {
+    "id": "33",
+    "title": "Professor Polvo",
+    "type": "documentario",
+    "year": 2020,
+    "imageUrl": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&auto=format&fit=crop&q=80",
+    "description": "Um cineasta cria uma conexão surpreendente com um polvo em uma floresta de algas na África do Sul."
+  },
+  {
+    "id": "34",
+    "title": "Arremesso Final (The Last Dance)",
+    "type": "documentario",
+    "year": 2020,
+    "imageUrl": "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&auto=format&fit=crop&q=80",
+    "description": "Crônica fascinante da lendária trajetória de Michael Jordan e o Chicago Bulls na temporada de 1997-98."
+  },
+  {
+    "id": "35",
+    "title": "Jiro Dreams of Sushi",
+    "type": "documentario",
+    "year": 2011,
+    "imageUrl": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&auto=format&fit=crop&q=80",
+    "description": "O perfil inspirador do mestre de sushi Jiro Ono, de 85 anos, e sua busca incansável pela perfeição culinária."
+  },
+  {
+    "id": "36",
+    "title": "O Dilema das Redes",
+    "type": "documentario",
+    "year": 2020,
+    "imageUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80",
+    "description": "Especialistas do Vale do Silício revelam como as plataformas digitais são projetadas para manipular o comportamento humano."
+  },
+  {
+    "id": "37",
+    "title": "13ª Emenda",
+    "type": "documentario",
+    "year": 2016,
+    "imageUrl": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80",
+    "description": "Análise profunda e impactante de Ava DuVernay sobre a história da criminalização e o sistema prisional nos EUA."
+  },
+  {
+    "id": "38",
+    "title": "Amy",
+    "type": "documentario",
+    "year": 2015,
+    "imageUrl": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop&q=80",
+    "description": "Retrato íntimo e emocionante da vida, do talento genial e da trágica trajetória da cantora Amy Winehouse."
+  },
+  {
+    "id": "39",
+    "title": "Democracia em Vertigem",
+    "type": "documentario",
+    "year": 2019,
+    "imageUrl": "https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=600&auto=format&fit=crop&q=80",
+    "description": "Documentário brasileiro de Petra Costa que retrata momentos decisivos da política e história recente do Brasil."
+  },
+  {
+    "id": "40",
+    "title": "Cosmos: Uma Odisseia do Espaço-Tempo",
+    "type": "documentario",
+    "year": 2014,
+    "imageUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80",
+    "description": "Apresentado por Neil deGrasse Tyson, uma jornada emocionante pelas maravilhas e leis do universo."
   }
 ]
