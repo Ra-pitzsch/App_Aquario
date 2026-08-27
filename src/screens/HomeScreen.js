@@ -267,13 +267,13 @@ function FloatingItem({ item, position, index, navigation }) {
 export default function HomeScreen({ navigation }) {
   const itemsToDisplay = catalog.slice(0, 8);
   const insets = useSafeAreaInsets();
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.homeBackground }]}>
       <StatusBar
-        barStyle={isDark ? 'light-content' : 'dark-content'}
-        backgroundColor={colors.background}
+        barStyle="light-content"
+        backgroundColor={colors.homeBackground}
       />
 
       {/* Bolhas sutis de ambiente */}
@@ -283,8 +283,8 @@ export default function HomeScreen({ navigation }) {
       <AmbientBubble startX={SCREEN_WIDTH * 0.88} size={10} duration={9000} delay={800} />
 
       <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 8 : 16 }]}>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Aquário</Text>
-        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
+        <Text style={[styles.headerTitle, { color: '#FFFFFF' }]}>Aquário</Text>
+        <Text style={[styles.headerSubtitle, { color: '#8EAEC4' }]}>
           Toque em uma mídia para ver detalhes e avaliar
         </Text>
       </View>

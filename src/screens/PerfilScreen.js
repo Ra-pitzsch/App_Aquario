@@ -183,7 +183,7 @@ export default function PerfilScreen({ navigation }) {
               {isDark ? '🌙 Modo Escuro' : '☀️ Modo Claro'}
             </Text>
             <Text style={[styles.themeSubtitle, { color: colors.textSecondary }]}>
-              {isDark ? 'Tema atual: Escuro (Aquário)' : 'Tema atual: Claro'}
+              {isDark ? 'Tema atual: Escuro' : 'Tema atual: Claro'}
             </Text>
           </View>
           <Switch

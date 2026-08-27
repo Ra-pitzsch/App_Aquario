@@ -1,25 +1,28 @@
 export const darkTheme = {
-  // Fundos
-  background: '#071A2B',           // Fundo principal azul marinho profundo
-  backgroundSecondary: '#0F2D47',  // Fundo de cards, inputs e superfícies
-  backgroundTertiary: '#163B5C',   // Superfícies elevadas e cabeçalhos
-  surface: '#0F2D47',              // Alias para backgroundSecondary
+  // Fundo Exclusivo da Home (Aquário)
+  homeBackground: '#071A2B',        // Fundo azul marinho profundo exclusivo da tela inicial (Aquário)
+  
+  // Fundos Neutros
+  background: '#1A1A1E',           // Fundo principal cinza escuro neutro
+  backgroundSecondary: '#26262B',  // Fundo de cards, inputs e superfícies
+  backgroundTertiary: '#323238',   // Superfícies elevadas e cabeçalhos
+  surface: '#26262B',              // Alias para backgroundSecondary
   
   // Bordas e Divisores
-  border: '#1B476E',               // Bordas de cards e divisores
-  borderLight: '#255A8A',          // Bordas com foco ou destaque
+  border: '#36363C',               // Bordas de cards e divisores
+  borderLight: '#484852',          // Bordas com foco ou destaque
 
-  // Destaques e Ações (Aquático)
+  // Destaques e Ações (Aquático / Turquesa)
   primary: '#00B8D4',              // Azul-turquesa vibrante para botões principais, tabs ativas e badges
   primaryDark: '#008EAA',          // Variação para estados pressionados
   primaryLight: '#33C6DC',         // Variação clara
   accent: '#4DD0E1',               // Verde-água / ciano claro para detalhes e ícones
   accentGlow: 'rgba(0, 184, 212, 0.3)', // Efeito de brilho / sombra
 
-  // Tipografia
+  // Tipografia Neutra
   text: '#FFFFFF',                 // Texto principal de alto contraste
-  textSecondary: '#8EAEC4',        // Texto secundário / descrições / subtítulos
-  textMuted: '#5B7F9E',            // Texto terciário / chevrons / placeholders
+  textSecondary: '#A1A1AA',        // Texto secundário neutro / descrições / subtítulos
+  textMuted: '#71717A',            // Texto terciário / chevrons / placeholders
 
   // Feedback e Alertas
   danger: '#FF4D4D',               // Vermelho exclusivo para erros e ações destrutivas
@@ -28,31 +31,34 @@ export const darkTheme = {
 
   // Avaliação / Estrelas
   star: '#FFC107',                 // Dourado para estrelas de rating
-  starInactive: '#1B476E',         // Estrela inativa
+  starInactive: '#3E3E46',         // Estrela inativa cinza neutro
 };
 
 export const lightTheme = {
-  // Fundos
-  background: '#F0F6FA',           // Fundo principal claro aquático
+  // Fundo Exclusivo da Home (Aquário)
+  homeBackground: '#071A2B',        // Fundo azul marinho profundo exclusivo da tela inicial (Aquário)
+  
+  // Fundos Neutros
+  background: '#F4F5F7',           // Fundo principal neutro claro
   backgroundSecondary: '#FFFFFF',  // Fundo de cards, inputs e superfícies
-  backgroundTertiary: '#E1EEF6',   // Superfícies elevadas e cabeçalhos
+  backgroundTertiary: '#E8EAED',   // Superfícies elevadas e cabeçalhos
   surface: '#FFFFFF',              // Alias para backgroundSecondary
   
   // Bordas e Divisores
-  border: '#D0E1ED',               // Bordas de cards e divisores
-  borderLight: '#B8D5E5',          // Bordas com foco ou destaque
+  border: '#E0E2E7',               // Bordas de cards e divisores
+  borderLight: '#D0D4DC',          // Bordas com foco ou destaque
 
-  // Destaques e Ações (Aquático)
+  // Destaques e Ações (Aquático / Turquesa)
   primary: '#00B8D4',              // Azul-turquesa vibrante mantido como destaque
   primaryDark: '#008EAA',          // Variação para estados pressionados
   primaryLight: '#33C6DC',         // Variação clara
   accent: '#0097A7',               // Ciano escurecido para contraste em fundos claros
   accentGlow: 'rgba(0, 184, 212, 0.15)', // Efeito de brilho / sombra suave
 
-  // Tipografia
-  text: '#071A2B',                 // Texto principal escuro de alto contraste
-  textSecondary: '#4A6D8C',        // Texto secundário / descrições / subtítulos
-  textMuted: '#7A9AB5',            // Texto terciário / chevrons / placeholders
+  // Tipografia Neutra
+  text: '#18181B',                 // Texto principal escuro de alto contraste
+  textSecondary: '#64748B',        // Texto secundário / descrições / subtítulos
+  textMuted: '#94A3B8',            // Texto terciário / chevrons / placeholders
 
   // Feedback e Alertas
   danger: '#E53935',               // Vermelho para erros e ações destrutivas
@@ -61,7 +67,7 @@ export const lightTheme = {
 
   // Avaliação / Estrelas
   star: '#FFA000',                 // Dourado para estrelas de rating
-  starInactive: '#CFD8DC',         // Estrela inativa
+  starInactive: '#CBD5E1',         // Estrela inativa neutra clara
 };
 
 export const themes = {
